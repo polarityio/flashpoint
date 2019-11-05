@@ -1,0 +1,25 @@
+<div class="mb-1">
+  {{#each details as |object index|}}
+    {{#if object.Attribute.Event}}
+      {{#each object.Attribute.Event.reports as |report|}}
+        {{#if report}}
+          <div>
+            <a href="{{report}}" class="p-link">View Flashpoint Report {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+          </div>
+        {{/if}}
+      {{/each}}
+      <h1 class="p-title">
+        {{fa-icon "fire" fixedWidth=true}}  Details
+      </h1>
+	{{#if object.Attribute.category}}
+		<span class="p-key">Category:</span> <span class="p-value">{{object.Attribute.category}}</span>
+	{{/if}}	
+	{{#if object.Attribute.Event.info}}
+      <div>
+          <span class="p-key">Related to:</span>
+          <a href="https://fp.tools/home/search/iocs?query=%22{{object.Attribute.Event.info}}%22" class="p-link">{{object.Attribute.Event.info}}</a>
+      </div>
+	{{/if}}
+    {{/if}}
+  {{/each}}
+</div>
