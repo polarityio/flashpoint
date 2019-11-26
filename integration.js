@@ -14,7 +14,11 @@ let previousDomainRegexAsString = '';
 let previousIpRegexAsString = '';
 let domainBlacklistRegex = null;
 let ipBlacklistRegex = null;
+
 const MAX_PARALLEL_LOOKUPS = 10;
+const MAX_DOMAIN_LABEL_LENGTH = 63;
+const MAX_ENTITY_LENGTH = 100;
+const IGNORED_IPS = new Set(['127.0.0.1', '255.255.255.255', '0.0.0.0']);
 
 /**
  *
@@ -99,25 +103,30 @@ function doLookup(entities, options, cb) {
 
   _setupRegexBlacklists(options);
 
-  Logger.trace({entities: entities}, "Logging the entity coming through");
+  Logger.trace(entities);
 
   entities.forEach(entity => {
-    if (_isEntityBlacklisted(entity, options)) {
-        next(null);
-      } else if (entity.value) {
+    if (!_isInvalidEntity(entity) && !_isEntityBlacklisted(entity, options)) {
       //do the lookup
       let requestOptions = {
         method: "GET",
-        uri: `${options.url}/indicators/simple`,
-        qs: {
-          limit: 10,
-          query: `${entity.value}`
-        },
         headers: {
             Authorization: "Bearer " + options.apiKey
         },
+        qs: {
+          limit: options.limit,
+          query: `${entity.value}`
+        },
         json: true
       };
+
+      if (entity.isIPv4 || entity.isHash || entity.isDomain) {
+        requestOptions.uri = `${options.url}/indicators/simple`
+      } else if (entity.types.indexOf('custom.cve') >= 0) {
+        requestOptions.uri = `${options.url}/reports`
+      } else {
+        return;
+      }
 
       Logger.trace({ uri: requestOptions }, "Request URI");
 
@@ -143,7 +152,7 @@ function doLookup(entities, options, cb) {
               body: body
             };
           } else if (res.statusCode === 404) {
-            // Not Found 
+            // Not Found
             result = {
               entity: entity,
               body: null
@@ -192,8 +201,33 @@ function doLookup(entities, options, cb) {
       }
     });
 
+    Logger.debug({ lookupResults }, 'Results');
     cb(null, lookupResults);
   });
+}
+
+function _isInvalidEntity(entity) {
+  // Domains should not be over 100 characters long so if we get any of those we don't look them up
+  if (entity.value.length > MAX_ENTITY_LENGTH) {
+    return true;
+  }
+
+  // Domain labels (the parts in between the periods, must be 63 characters or less
+  if (entity.isDomain) {
+    const invalidLabel = entity.value.split('.').find((label) => {
+      return label.length > MAX_DOMAIN_LABEL_LENGTH;
+    });
+
+    if (typeof invalidLabel !== 'undefined') {
+      return true;
+    }
+  }
+
+  if (entity.isIPv4 && IGNORED_IPS.has(entity.value)) {
+    return true;
+  }
+
+  return false;
 }
 
 function _isEntityBlacklisted(entity, options) {
@@ -235,7 +269,7 @@ function validateOptions(userOptions, cb) {
   ) {
     errors.push({
       key: "apiKey",
-      message: "You must provide a valid API key"
+      message: "You must provide a valid Flashpoint API key"
     });
   }
   cb(null, errors);

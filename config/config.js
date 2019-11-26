@@ -24,6 +24,12 @@ module.exports = {
      */
     description: "Flashpoint delivers Business Risk Intelligence (BRI) that empowers organizations worldwide to combat threats and adversaries",
     entityTypes: ['IPv4', 'hash', 'domain'],
+    customTypes:[
+      {
+          key: 'cve',
+          regex: /CVE-(1999|2\d{3})-(0\d{2}[1-9]|[1-9]\d{3,})/
+      }
+    ],
     /**
      * An array of style files (css or less) that will be included for your integration. Any styles specified in
      * the below files can be used in your custom template.
@@ -78,7 +84,7 @@ module.exports = {
         rejectUnauthorized: true
     },
     logging: {
-        level: 'trace',  //trace, debug, info, warn, error, fatal
+        level: 'info',  //trace, debug, info, warn, error, fatal
     },
     /**
      * Options that are displayed to the user/admin in the Polarity integration user-interface.  Should be structured
@@ -105,6 +111,15 @@ module.exports = {
             "type": "password",
             "userCanEdit": true,
             "adminOnly": false
+        },
+        {
+            "key": "limit",
+            "name": "Result Limit",
+            "description": "The maximum amount of results to be returned per query",
+            "default": "10",
+            "type": "text",
+            "userCanEdit": false,
+            "adminOnly": true
         },
         {
           "key": 'blacklist',
