@@ -7,6 +7,7 @@ The Polarity Flashpoint integration allows Polarity to search Flashpoint's Indic
 For more information on Flashpoint, please visit [official website](https://www.flashpoint-intel.com/).
 
 Check out the integration in action:
+
 <img src="https://user-images.githubusercontent.com/22529325/69744937-261f7980-110f-11ea-8d63-0078c0cca29f.png"  width="350px" height="400px">
 
 ## Flashpoint Integration Options
