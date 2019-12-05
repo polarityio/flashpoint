@@ -1,6 +1,21 @@
-{{#if details}}
-  <span class="integration-summary-tag integration-background-color integration-border-color">
-    <span class="acronym integration-text-bold-color">{{block.acronym}}</span>
-    <span class="integration-text-color">Report Count: {{details.length}}</span>
-  </span>
+{{#if (eq block.entity.type "custom")}}
+  {{#if details.data}}
+    <span class="integration-summary-tag integration-background-color integration-border-color">
+      <span class="acronym integration-text-bold-color">{{block.acronym}}</span>
+      <span class="integration-text-color">Report Matches: {{details.data.length}}</span>
+    </span>
+  {{/if}}
+{{else}}
+  {{#if details}}
+    <span class="integration-summary-tag integration-background-color integration-border-color">
+      <span class="acronym integration-text-bold-color">{{block.acronym}}</span>
+      <span class="integration-text-color">Indicator Matches: {{details.length}}</span>
+    </span>
+  {{/if}}
+  {{#if details.[0].Attribute.Event.reports}}
+    <span class="integration-summary-tag integration-background-color integration-border-color">
+      <span class="acronym integration-text-bold-color">{{block.acronym}}</span>
+      <span class="integration-text-color">Report Matches: {{details.[0].Attribute.Event.reports.length}}</span>
+    </span>
+  {{/if}}
 {{/if}}
