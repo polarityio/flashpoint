@@ -222,10 +222,15 @@ function _isEntityBlacklisted(entity, { blacklist }) {
 
   const entityIsBlacklisted = _.includes(blacklist, entity.value.toLowerCase());
 
-  const ipIsBlacklisted = entity.isIP && !entity.isPrivateIP && ipBlacklistRegex.test(entity.value);
+  const ipIsBlacklisted = entity.isIP && 
+    !entity.isPrivateIP && 
+    domainBlacklistRegex !== null && 
+    ipBlacklistRegex.test(entity.value);
   if (ipIsBlacklisted) Logger.debug({ ip: entity.value }, 'Blocked BlackListed IP Lookup');
   
-  const domainIsBlacklisted = entity.isDomain && domainBlacklistRegex.test(entity.value);
+  const domainIsBlacklisted = entity.isDomain && 
+    domainBlacklistRegex !== null && 
+    domainBlacklistRegex.test(entity.value);
   if (domainIsBlacklisted) Logger.debug({ domain: entity.value }, 'Blocked BlackListed Domain Lookup');
 
   return entityIsBlacklisted || ipIsBlacklisted || domainIsBlacklisted;
