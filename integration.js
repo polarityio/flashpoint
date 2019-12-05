@@ -111,7 +111,7 @@ function doLookup(entities, options, cb) {
       let requestOptions = {
         method: "GET",
         headers: {
-            Authorization: "Bearer " + options.apiKey
+          Authorization: "Bearer " + options.apiKey
         },
         qs: {
           limit: options.limit,
@@ -130,44 +130,36 @@ function doLookup(entities, options, cb) {
 
       Logger.trace({ uri: requestOptions }, "Request URI");
 
-      tasks.push(function(done) {
-        requestWithDefaults(requestOptions, function(err, res, body) {
+      tasks.push(function (done) {
+        requestWithDefaults(requestOptions, function (err, { statusCode }, body) {
           if (err) {
-            Logger.error({ err: err }, 'Error Executing Request');
+            Logger.error({ err }, 'Error Executing Request');
             done(err);
             return;
           }
 
           Logger.trace(
-            { body: body, statusCode: res.statusCode },
+            { body, statusCode },
             "Result of Lookup"
           );
 
           let result = {};
 
-          if (res.statusCode === 200) {
-            // we got data!
+          if (statusCode === 200) {
             result = {
-              entity: entity,
-              body: body
+              entity,
+              body
             };
-          } else if (res.statusCode === 404) {
-            // Not Found
+          } else if (statusCode === 404 || statusCode === 202) {
             result = {
-              entity: entity,
+              entity,
               body: null
             };
-          } else if (res.statusCode === 202) {
-            // no result found
-            result = {
-              entity: entity,
-              body: null
-            };
-          }
+          } 
           if (body.error) {
             // entity not found
             result = {
-              entity: entity,
+              entity,
               body: null
             };
           }
@@ -183,19 +175,19 @@ function doLookup(entities, options, cb) {
       return;
     }
 
-    results.forEach(result => {
-      if (result.body === null || (Array.isArray(result.body) && result.body.length === 0)) {
+    results.forEach(({ body, entity }) => {
+      if (_isMiss(body)) {
         lookupResults.push({
-          entity: result.entity,
+          entity,
           data: null
         });
       } else {
-        Logger.trace({body: result.body}, "Logging the result body coming through");
+        Logger.trace({ body }, "Logging the result body coming through");
         lookupResults.push({
-          entity: result.entity,
+          entity,
           data: {
             summary: [],
-            details: result.body
+            details: body
           }
         });
       }
@@ -204,60 +196,39 @@ function doLookup(entities, options, cb) {
     Logger.debug({ lookupResults }, 'Results');
     cb(null, lookupResults);
   });
+
 }
+
+const _isMiss = (body) =>
+  body === null ||
+  (Array.isArray(body) && body.length === 0) ||
+  (Array.isArray(body.data) && body.data.length === 0);
 
 function _isInvalidEntity(entity) {
   // Domains should not be over 100 characters long so if we get any of those we don't look them up
-  if (entity.value.length > MAX_ENTITY_LENGTH) {
-    return true;
-  }
+  const domainIsTooLong = entity.value.length > MAX_ENTITY_LENGTH;
 
   // Domain labels (the parts in between the periods, must be 63 characters or less
-  if (entity.isDomain) {
-    const invalidLabel = entity.value.split('.').find((label) => {
-      return label.length > MAX_DOMAIN_LABEL_LENGTH;
-    });
+  const domainLabelIsTooLong = entity.isDomain && 
+    entity.value.split('.').find((label) => label.length > MAX_DOMAIN_LABEL_LENGTH) !== undefined;
+   
+  const shouldIgnoreThisIP = entity.isIPv4 && IGNORED_IPS.has(entity.value)
 
-    if (typeof invalidLabel !== 'undefined') {
-      return true;
-    }
-  }
-
-  if (entity.isIPv4 && IGNORED_IPS.has(entity.value)) {
-    return true;
-  }
-
-  return false;
+  return domainIsTooLong || domainLabelIsTooLong || shouldIgnoreThisIP;
 }
 
-function _isEntityBlacklisted(entity, options) {
-  const blacklist = options.blacklist;
+function _isEntityBlacklisted(entity, { blacklist }) {
+  Logger.trace({ blacklist }, 'Blacklist Values');
 
-  Logger.trace({ blacklist: blacklist }, 'checking to see what blacklist looks like');
+  const entityIsBlacklisted = _.includes(blacklist, entity.value.toLowerCase());
 
-  if (_.includes(blacklist, entity.value.toLowerCase())) {
-    return true;
-  }
+  const ipIsBlacklisted = entity.isIP && !entity.isPrivateIP && ipBlacklistRegex.test(entity.value);
+  if (ipIsBlacklisted) Logger.debug({ ip: entity.value }, 'Blocked BlackListed IP Lookup');
+  
+  const domainIsBlacklisted = entity.isDomain && domainBlacklistRegex.test(entity.value);
+  if (domainIsBlacklisted) Logger.debug({ domain: entity.value }, 'Blocked BlackListed Domain Lookup');
 
-  if (entity.isIP && !entity.isPrivateIP) {
-    if (ipBlacklistRegex !== null) {
-      if (ipBlacklistRegex.test(entity.value)) {
-        Logger.debug({ ip: entity.value }, 'Blocked BlackListed IP Lookup');
-        return true;
-      }
-    }
-  }
-
-  if (entity.isDomain) {
-    if (domainBlacklistRegex !== null) {
-      if (domainBlacklistRegex.test(entity.value)) {
-        Logger.debug({ domain: entity.value }, 'Blocked BlackListed Domain Lookup');
-        return true;
-      }
-    }
-  }
-
-  return false;
+  return entityIsBlacklisted || ipIsBlacklisted || domainIsBlacklisted;
 }
 
 function validateOptions(userOptions, cb) {
@@ -277,7 +248,7 @@ function validateOptions(userOptions, cb) {
 
 
 module.exports = {
-  doLookup: doLookup,
-  startup: startup,
-  validateOptions: validateOptions
+  doLookup,
+  startup,
+  validateOptions
 };
