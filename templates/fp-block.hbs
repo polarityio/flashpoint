@@ -22,10 +22,10 @@
         <span class="p-value">{{object.Attribute.category}}<br></span>
       {{/if}}
     	{{#if object.Attribute.Event.info}}
-          <div>
-              <span class="p-key">Related to:</span>
-              <a href="https://fp.tools/home/search/iocs?query=%22{{object.Attribute.Event.info}}%22" class="p-link">{{object.Attribute.Event.info}}</a>
-          </div>
+        <div class="related-to">
+            <span class="p-key">Related to:</span>
+            <a href="https://fp.tools/home/search/iocs?query=%22{{object.Attribute.Event.info}}%22" class="p-link">{{object.Attribute.Event.info}}</a>
+        </div>
     	{{/if}}
       {{#if object.Attribute.value.comment}}
         <span class="p-key">Comment:</span>
