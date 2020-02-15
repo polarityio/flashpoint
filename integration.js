@@ -1,11 +1,18 @@
 const request = require('request');
 const async = require('async');
 const fs = require('fs');
+const _ = require('lodash');
 const config = require('./config/config');
 
 let Logger;
 let requestWithDefaults;
+let previousDomainRegexAsString = '';
+let previousIpRegexAsString = '';
+let domainBlacklistRegex = null;
+let ipBlacklistRegex = null;
+const IGNORED_IPS = new Set(['127.0.0.1', '255.255.255.255', '0.0.0.0']);
 
+const MAX_DOMAIN_LABEL_LENGTH = 63;
 const MAX_PARALLEL_LOOKUPS = 10;
 
 /**
@@ -47,40 +54,90 @@ function startup(logger) {
   requestWithDefaults = request.defaults(defaults);
 }
 
+function _setupRegexBlacklists(options) {
+  if (options.domainBlacklistRegex !== previousDomainRegexAsString && options.domainBlacklistRegex.length === 0) {
+    Logger.debug('Removing Domain Blacklist Regex Filtering');
+    previousDomainRegexAsString = '';
+    domainBlacklistRegex = null;
+  } else {
+    if (options.domainBlacklistRegex !== previousDomainRegexAsString) {
+      previousDomainRegexAsString = options.domainBlacklistRegex;
+      Logger.debug({ domainBlacklistRegex: previousDomainRegexAsString }, 'Modifying Domain Blacklist Regex');
+      domainBlacklistRegex = new RegExp(options.domainBlacklistRegex, 'i');
+    }
+  }
+
+  if (options.ipBlacklistRegex !== previousIpRegexAsString && options.ipBlacklistRegex.length === 0) {
+    Logger.debug('Removing IP Blacklist Regex Filtering');
+    previousIpRegexAsString = '';
+    ipBlacklistRegex = null;
+  } else {
+    if (options.ipBlacklistRegex !== previousIpRegexAsString) {
+      previousIpRegexAsString = options.ipBlacklistRegex;
+      Logger.debug({ ipBlacklistRegex: previousIpRegexAsString }, 'Modifying IP Blacklist Regex');
+      ipBlacklistRegex = new RegExp(options.ipBlacklistRegex, 'i');
+    }
+  }
+}
+
+function _isEntityBlacklisted(entity, { blacklist }) {
+  Logger.trace({ blacklist }, 'Blacklist Values');
+
+  const entityIsBlacklisted = _.includes(blacklist, entity.value.toLowerCase());
+
+  const ipIsBlacklisted =
+    entity.isIP && !entity.isPrivateIP && ipBlacklistRegex !== null && ipBlacklistRegex.test(entity.value);
+  if (ipIsBlacklisted) Logger.debug({ ip: entity.value }, 'Blocked BlackListed IP Lookup');
+
+  const domainIsBlacklisted =
+    entity.isDomain && domainBlacklistRegex !== null && domainBlacklistRegex.test(entity.value);
+  if (domainIsBlacklisted) Logger.debug({ domain: entity.value }, 'Blocked BlackListed Domain Lookup');
+
+  return entityIsBlacklisted || ipIsBlacklisted || domainIsBlacklisted;
+}
+
+function _isInvalidEntity(entity) {
+  return entity.isIPv4 && IGNORED_IPS.has(entity.value)
+}
+
 function doLookup(entities, options, cb) {
   let lookupResults = [];
   let tasks = [];
 
   Logger.debug(entities);
 
+  _setupRegexBlacklists(options);
+
   entities.forEach((entity) => {
-    let requestOptions = {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + options.apiKey
-      },
-      uri: `${options.url}/indicators/simple`,
-      qs: {
-        limit: options.limit,
-        query: `"${entity.value}"`
-      },
-      json: true
-    };
+    if (!_isInvalidEntity(entity) && !_isEntityBlacklisted(entity, options)) {
+      let requestOptions = {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + options.apiKey
+        },
+        uri: `${options.url}/indicators/simple`,
+        qs: {
+          limit: options.limit,
+          query: `"${entity.value}"`
+        },
+        json: true
+      };
 
-    Logger.trace({ uri: requestOptions }, 'Request URI');
+      Logger.trace({ uri: requestOptions }, 'Request URI');
 
-    tasks.push(function(done) {
-      requestWithDefaults(requestOptions, function(error, res, body) {
-        let processedResult = handleRestError(error, entity, res, body);
+      tasks.push(function(done) {
+        requestWithDefaults(requestOptions, function(error, res, body) {
+          let processedResult = handleRestError(error, entity, res, body);
 
-        if (processedResult.error) {
-          done(processedResult);
-          return;
-        }
+          if (processedResult.error) {
+            done(processedResult);
+            return;
+          }
 
-        done(null, processedResult);
+          done(null, processedResult);
+        });
       });
-    });
+    }
   });
 
   async.parallelLimit(tasks, MAX_PARALLEL_LOOKUPS, (err, results) => {
