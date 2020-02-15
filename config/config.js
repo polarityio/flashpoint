@@ -115,7 +115,7 @@ module.exports = {
     {
       key: 'blacklist',
       name: 'Blacklist Domains and IPs',
-      description: 'List of domains and IPs that you never want to send to Flashpoint',
+      description: 'Comma delimited List of domains and IPs that you never want to send to Flashpoint',
       default: '',
       type: 'text',
       userCanEdit: false,
