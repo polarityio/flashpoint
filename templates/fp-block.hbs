@@ -1,115 +1,160 @@
-<div class="mb-1">
-{{#if details}}
-  {{#each details as |object|}}
-    {{#if object.Attribute.Event}}
-      <h1 class="p-title">
-        {{fa-icon "bug" fixedWidth=true}}  Indicator Detail
-      </h1>
-      {{#if object.Attribute.type}}
-        <span class="p-key">Indicator Type:</span>
-        <span class="p-value">{{object.Attribute.type}}<br></span>
-      {{/if}}
-    	{{#if object.Attribute.category}}
-    		<span class="p-key">Category:</span>
-        <span class="p-value">{{object.Attribute.category}}<br></span>
-    	{{/if}}
-      {{#if object.Attribute.timestamp}}
-        <span class="p-key">Indicator Timestamp:</span>
-        <span class="p-value">{{moment-format (unix object.Attribute.timestamp) "YYYY-MM-DD HH:mm:ss z" timeZone=timezone}}<br></span>
-      {{/if}}
-      {{#if object.Attribute.category}}
-        <span class="p-key">Category:</span>
-        <span class="p-value">{{object.Attribute.category}}<br></span>
-      {{/if}}
-    	{{#if object.Attribute.Event.info}}
-          <div>
-              <span class="p-key">Related to:</span>
-              <a href="https://fp.tools/home/search/iocs?query=%22{{object.Attribute.Event.info}}%22" class="p-link">{{object.Attribute.Event.info}}</a>
-          </div>
-    	{{/if}}
-      {{#if object.Attribute.value.comment}}
-        <span class="p-key">Comment:</span>
-        <span class="p-value">{{object.Attribute.value.comment}}<br></span>
-      {{/if}}
-      {{#if object.Attribute.value.url}}
-        <span class="p-key">URL:</span>
-        <span class="p-value">{{object.Attribute.value.url}}<br></span>
-      {{/if}}
-      {{#if object.Attribute.value.domain}}
-        <span class="p-key">Domain:</span>
-        <span class="p-value">{{object.Attribute.value.domain}}<br></span>
-      {{/if}}
-      {{#if object.Attribute.value.md5}}
-        <span class="p-key">MD5:</span>
-        <span class="p-value">{{object.Attribute.value.md5}}<br></span>
-      {{/if}}
-      {{#if object.Attribute.value.sha1}}
-        <span class="p-key">SHA-1:</span>
-        <span class="p-value">{{object.Attribute.value.sha1}}<br></span>
-      {{/if}}
-      {{#if object.Attribute.value.sha256}}
-        <span class="p-key">SHA-256:</span>
-        <span class="p-value">{{object.Attribute.value.sha256}}<br></span>
-      {{/if}}
-      {{#if object.Attribute.value.other}}
-        <span class="p-key">Other:</span>
-        <span class="p-value">{{object.Attribute.value.other}}<br></span>
-      {{/if}}
-      {{#if object.Attribute.Event.reports}}
-        <h1 class="p-title">
-            {{fa-icon "file-alt" fixedWidth=true}} Related Reports
-        </h1>
-        {{#each object.Attribute.Event.reports as |report|}}
-            <div>
-              <a href="{{report}}" class="p-link">View Flashpoint Report {{fa-icon "external-link-square" class="external-link-icon"}}</a>
-            </div>
-        {{/each}}
-      {{/if}}
-    {{/if}}
-    <hr>
-  {{/each}}
-{{/if}}
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a {{action "changeTab" "indicators"}} class="nav-link {{if (or (eq activeTab "indicators")(not activeTab)) "active"}}" href="#">Indicators ({{details.indicators.length}})</a>
+    </li>
+    <li class="nav-item">
+        <a {{action "changeTab" "reports"}} class="nav-link {{if (eq activeTab "reports") "active"}}" href="#">Reports {{#unless block.isLoadingDetails}}({{details.report.data.length}}){{/unless}}</a>
+    </li>
+    <li class="nav-item">
+        <a {{action "changeTab" "posts"}} class="nav-link {{if (eq activeTab "posts") "active"}}" href="#">Posts {{#unless block.isLoadingDetails}}({{details.posts.data.length}}){{/unless}}</a>
+    </li>
+</ul>
 
-{{#if details.data}}
-  {{#each details.data as |object index|}}
-    <h1 class="p-title">
-      {{fa-icon "file-alt" fixedWidth=true}}  Report Detail
-    </h1>
-  	{{#if object.title}}
-        <div>
-            <span class="p-key">Report Title:</span>
-            <a href="{{object.platform_url}}" class="p-link">{{object.title}} {{fa-icon "external-link-square" class="external-link-icon"}}</a>
-        </div>
-  	{{/if}}
-    {{#if object.summary}}
-        <div>
-            <span class="p-key">Report Summary:</span>
-            <span class="p-value">{{object.summary}}<br></span>
-        </div>
+{{#unless block.isLoadingDetails}}
+  {{#if (or (eq activeTab "indicators")(not activeTab))}}
+
+    {{#if details.indicators}}
+      {{#each details.indicators as |object index|}}
+        {{#if (gt index 0)}}
+          <hr>
+        {{/if}}
+        {{#if object.Attribute.Event}}
+          <h1 class="p-title">
+            {{fa-icon "flame" fixedWidth=true}}  Indicator Detail
+          </h1>
+          {{#if object.Attribute.type}}
+            <span class="p-key">Indicator Type:</span>
+            <span class="p-value">{{object.Attribute.type}}<br></span>
+          {{/if}}
+        	{{#if object.Attribute.category}}
+        		<span class="p-key">Category:</span>
+            <span class="p-value">{{object.Attribute.category}}<br></span>
+        	{{/if}}
+          {{#if object.Attribute.timestamp}}
+            <span class="p-key">Indicator Timestamp:</span>
+            <span class="p-value">{{moment-format (unix object.Attribute.timestamp) "YYYY-MM-DD HH:mm:ss z" timeZone=timezone}}<br></span>
+          {{/if}}
+          {{#if object.Attribute.category}}
+            <span class="p-key">Category:</span>
+            <span class="p-value">{{object.Attribute.category}}<br></span>
+          {{/if}}
+        	{{#if object.Attribute.Event.info}}
+            <div class="related-to">
+                <span class="p-key">Related to:</span>
+                <a href="https://fp.tools/home/search/iocs?query=%22{{object.Attribute.Event.info}}%22" class="p-link">{{object.Attribute.Event.info}}</a>
+            </div>
+        	{{/if}}
+          {{#if object.Attribute.value.comment}}
+            <span class="p-key">Comment:</span>
+            <span class="p-value">{{object.Attribute.value.comment}}<br></span>
+          {{/if}}
+          {{#if object.Attribute.value.url}}
+            <span class="p-key">URL:</span>
+            <span class="p-value">{{object.Attribute.value.url}}<br></span>
+          {{/if}}
+          {{#if object.Attribute.value.domain}}
+            <span class="p-key">Domain:</span>
+            <span class="p-value">{{object.Attribute.value.domain}}<br></span>
+          {{/if}}
+          {{#if object.Attribute.value.md5}}
+            <span class="p-key">MD5:</span>
+            <span class="p-value">{{object.Attribute.value.md5}}<br></span>
+          {{/if}}
+          {{#if object.Attribute.value.sha1}}
+            <span class="p-key">SHA-1:</span>
+            <span class="p-value">{{object.Attribute.value.sha1}}<br></span>
+          {{/if}}
+          {{#if object.Attribute.value.sha256}}
+            <span class="p-key">SHA-256:</span>
+            <span class="p-value">{{object.Attribute.value.sha256}}<br></span>
+          {{/if}}
+          {{#if object.Attribute.value.other}}
+            <span class="p-key">Other:</span>
+            <span class="p-value">{{object.Attribute.value.other}}<br></span>
+          {{/if}}
+        {{/if}}
+      {{/each}}
     {{/if}}
-    {{#if object.posted_at}}
-        <div>
-            <span class="p-key">Report Posted:</span>
-            <span class="p-value">{{object.posted_at}}<br></span>
-        </div>
+  {{/if}}
+
+  {{#if (eq activeTab "reports")}}
+    {{#if details.report}}
+      {{#if (eq details.report.data.length 0)}}
+        <div class="mt-2">No Reports</div>
+      {{/if}}
+      {{#each details.report.data as |object index|}}
+        {{#if (gt index 0)}}
+          <hr>
+        {{/if}}
+        <h1 class="p-title">
+          {{fa-icon "book-open" fixedWidth=true}}  Report Detail
+        </h1>
+      	{{#if object.title}}
+            <div>
+                <span class="p-key">Title:</span>
+                <a href="{{object.platform_url}}" class="p-link">{{object.title}} {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+            </div>
+      	{{/if}}
+        {{#if object.summary}}
+            <div>
+                <span class="p-key">Summary:</span>
+                <span class="p-value">{{object.summary}}<br></span>
+            </div>
+        {{/if}}
+        {{#if object.posted_at}}
+            <div>
+                <span class="p-key">Posted:</span>
+                <span class="p-value">{{object.posted_at}}<br></span>
+            </div>
+        {{/if}}
+        {{#if object.updated_at}}
+            <div>
+                <span class="p-key">Last Updated:</span>
+                <span class="p-value">{{object.updated_at}}<br></span>
+            </div>
+        {{/if}}
+        {{#if object.tags}}
+          <h1 class="p-title">
+              {{fa-icon "tags" fixedWidth=true}} Report Tags
+          </h1>
+          <div>
+              {{#each object.tags as |tag| }}
+                  <span class="tag">{{tag}}</span>
+              {{/each}}
+          </div>
+        {{/if}}
+      {{/each}}
     {{/if}}
-    {{#if object.updated_at}}
-        <div>
-            <span class="p-key">Report Last Updated:</span>
-            <span class="p-value">{{object.updated_at}}<br></span>
-        </div>
+  {{/if}}
+
+  {{#if (eq activeTab "posts")}}
+    {{#if details.posts}}
+      {{#if (eq details.posts.data.length 0)}}
+        <div class="mt-2">No Posts</div>
+      {{/if}}
+      {{#each details.posts.data as |object index|}}
+        {{#if (gt index 0)}}
+          <hr>
+        {{/if}}
+        <h1 class="p-title">
+            {{fa-icon "comments-alt" fixedWidth=true}}  Forum Posts Detail
+        </h1>
+      	{{#if object.platform_url}}
+            <div>
+                <a href="{{object.platform_url}}" class="p-link">Pivot to Thread {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+            </div>
+      	{{/if}}
+        {{#if object.published_at}}
+            <div>
+                <span class="p-key">Published At:</span>
+                <span class="p-value">{{object.published_at}}</span>
+            </div>
+        {{/if}}
+        {{#if object.body}}
+          <div class="post-container">{{object.body}}</div>
+        {{/if}}
+      {{/each}}
     {{/if}}
-    {{#if object.tags}}
-      <h1 class="p-title">
-          {{fa-icon "tags" fixedWidth=true}} Report Tags
-      </h1>
-      <div>
-          {{#each object.tags as |tag| }}
-              <span class="tag">{{tag}}</span>
-          {{/each}}
-      </div>
-    {{/if}}
-    <hr>
-  {{/each}}
-{{/if}}
-</div>
+  {{/if}}
+
+{{/unless}}

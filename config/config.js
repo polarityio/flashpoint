@@ -5,7 +5,7 @@ module.exports = {
    * @type String
    * @required
    */
-  name: "Flashpoint",
+  name: 'Flashpoint',
   /**
    * The acronym that appears in the notification window when information from this integration
    * is displayed.  Note that the acronym is included as part of each "tag" in the summary information
@@ -15,15 +15,16 @@ module.exports = {
    * @type String
    * @required
    */
-  acronym: "FP",
+  acronym: 'FP',
   /**
    * Description for this integration which is displayed in the Polarity integrations user interface
    *
    * @type String
    * @optional
    */
-  description: "Flashpoint delivers Business Risk Intelligence (BRI) that empowers organizations worldwide to combat threats and adversaries",
-  entityTypes: ['IPv4', 'hash', 'domain'],
+  description:
+    'Flashpoint delivers Business Risk Intelligence (BRI) that empowers organizations worldwide to combat threats and adversaries',
+  entityTypes: ['IPv4', 'hash', 'domain', 'email'],
   customTypes: [
     {
       key: 'cve',
@@ -37,7 +38,7 @@ module.exports = {
    * @type Array
    * @optional
    */
-  styles: ["./styles/fp.less",],
+  styles: ['./styles/fp.less'],
   /**
    * Provide custom component logic and template for rendering the integration details block.  If you do not
    * provide a custom template and/or component then the integration will display data as a table of key value
@@ -48,18 +49,10 @@ module.exports = {
    */
   block: {
     component: {
-      file: "./components/fp-block.js"
+      file: './components/fp-block.js'
     },
     template: {
-      file: "./templates/fp-block.hbs"
-    }
-  },
-  summary: {
-    component: {
-      file: "./components/fp-summary.js"
-    },
-    template: {
-      file: "./templates/fp-summary.hbs"
+      file: './templates/fp-block.hbs'
     }
   },
   request: {
@@ -82,7 +75,7 @@ module.exports = {
     rejectUnauthorized: true
   },
   logging: {
-    level: 'info',  //trace, debug, info, warn, error, fatal
+    level: 'info' //trace, debug, info, warn, error, fatal
   },
   /**
    * Options that are displayed to the user/admin in the Polarity integration user-interface.  Should be structured
@@ -93,29 +86,29 @@ module.exports = {
    */
   options: [
     {
-      key: "url",
-      name: "Flashpoint API URL",
-      description: "The base URL of the Flashpoint API including the schema (i.e., https://)",
-      default: "https://fp.tools/api/v4",
-      type: "text",
+      key: 'url',
+      name: 'Flashpoint API URL',
+      description: 'The base URL of the Flashpoint API including the schema (i.e., https://)',
+      default: 'https://fp.tools/api/v4',
+      type: 'text',
       userCanEdit: false,
       adminOnly: true
     },
     {
-      key: "apiKey",
-      name: "API Key",
-      description: "Valid Flashpoint API Key",
-      default: "",
-      type: "password",
+      key: 'apiKey',
+      name: 'API Key',
+      description: 'Valid Flashpoint API Key',
+      default: '',
+      type: 'password',
       userCanEdit: true,
       adminOnly: false
     },
     {
-      key: "limit",
-      name: "Result Limit",
-      description: "The maximum amount of results to be returned per query",
-      default: "10",
-      type: "text",
+      key: 'limit',
+      name: 'Result Limit',
+      description: 'The maximum amount of results to be returned per query',
+      default: '10',
+      type: 'text',
       userCanEdit: false,
       adminOnly: true
     },
@@ -141,8 +134,7 @@ module.exports = {
     {
       key: 'ipBlacklistRegex',
       name: 'IP Black List Regex',
-      description:
-        'IPs that match the given regex will not be looked up (if blank, no IPs will be black listed)',
+      description: 'IPs that match the given regex will not be looked up (if blank, no IPs will be black listed)',
       default: '',
       type: 'text',
       userCanEdit: false,
