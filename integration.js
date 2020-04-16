@@ -190,7 +190,7 @@ function doReportLookup(entity, options) {
       let processedResult = handleRestError(error, entity, response, body);
 
       if (processedResult.error) {
-        cb(processedResult);
+        done(processedResult);
         return;
       }
 
