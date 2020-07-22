@@ -118,7 +118,7 @@ module.exports = {
       description: 'Comma delimited List of domains and IPs that you never want to send to Flashpoint',
       default: '',
       type: 'text',
-      userCanEdit: true,
+      userCanEdit: false,
       adminOnly: false
     },
     {
@@ -128,7 +128,7 @@ module.exports = {
         'Domains that match the given regex will not be looked up.',
       default: '',
       type: 'text',
-      userCanEdit: true,
+      userCanEdit: false,
       adminOnly: false
     },
     {
@@ -137,7 +137,7 @@ module.exports = {
       description: 'IPs that match the given regex will not be looked up.',
       default: '',
       type: 'text',
-      userCanEdit: true,
+      userCanEdit: false,
       adminOnly: false
     }
   ]
