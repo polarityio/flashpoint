@@ -115,13 +115,21 @@ function doLookup(entities, options, cb) {
         headers: {
           Authorization: 'Bearer ' + options.apiKey
         },
-        uri: `${options.url}/indicators/simple`,
-        qs: {
-          limit: options.limit,
-          query: `"${entity.value}"`
-        },
         json: true
       };
+
+      if (entity.isHash || entity.isIPv4 || entity.isDomain) {
+        requestOptions.uri = `${options.url}/indicators/simple`,
+        requestOptions.qs = {query: `"${entity.value}"`, limit: options.limit}
+      } else if (entity.isEmail) {
+        requestOptions.uri = `${options.url}/indicators/simple`,
+        requestOptions.qs = {query: `${entity.value}`, limit: options.limit}
+      } else if (entity.type === 'cve') {
+        requestOptions.uri = `${options.url}/all/search`,
+        requestOptions.qs = {query: `"${entity.value}"` + "+basetypes:(cve)", limit: 1}
+      } else {
+        return;
+      }
 
       Logger.trace({ uri: requestOptions }, 'Request URI');
 
@@ -148,7 +156,7 @@ function doLookup(entities, options, cb) {
     }
 
     results.forEach((result) => {
-      if (result.body === null || result.body.length === 0) {
+      if ((result.entity.type != 'cve' && (result.body === null || result.body.length === 0)) || (result.entity.type === 'cve' && (result.body === null || result.body.hits.total === 0))) {
         lookupResults.push({
           entity: result.entity,
           data: null
@@ -157,7 +165,7 @@ function doLookup(entities, options, cb) {
         lookupResults.push({
           entity: result.entity,
           data: {
-            summary: [`Indicator Count: ${result.body.length}`],
+            summary: [],
             details: {
               indicators: result.body
             }

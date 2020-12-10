@@ -24,13 +24,7 @@ module.exports = {
    */
   description:
     'Flashpoint delivers Business Risk Intelligence (BRI) that empowers organizations worldwide to combat threats and adversaries',
-  entityTypes: ['IPv4', 'hash', 'domain', 'email'],
-  customTypes: [
-    {
-      key: 'cve',
-      regex: /CVE-(1999|2\d{3})-(0\d{2}[1-9]|[1-9]\d{3,})/
-    }
-  ],
+  entityTypes: ['IPv4', 'hash', 'domain', 'email', 'cve'],
   /**
    * An array of style files (css or less) that will be included for your integration. Any styles specified in
    * the below files can be used in your custom template.
@@ -53,6 +47,14 @@ module.exports = {
     },
     template: {
       file: './templates/fp-block.hbs'
+    }
+  },
+  summary: {
+    component: {
+      file: './components/fp-summary.js'
+    },
+    template: {
+      file: './templates/fp-summary.hbs'
     }
   },
   request: {
