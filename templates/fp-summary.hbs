@@ -1,36 +1,36 @@
 {{#if details.indicators.hits.hits}}
-  <span class="integration-summary-tag integration-background-color integration-border-color">
+  <span {{on "click" (optional this.scrollToIntegration)}} class="integration-summary-tag integration-background-color integration-border-color">
      <span class="acronym integration-text-bold-color">{{block.acronym}}</span>
      <span class="integration-text-color">Indicator Count: {{details.indicators.hits.hits.length}}</span>
   </span>
   {{#each details.indicators.hits.hits as |hit index|}}
     {{#if hit._source.cve.nist.cvssv2.base_score}}
-      <span class="integration-summary-tag integration-background-color integration-border-color">
+      <span {{on "click" (optional this.scrollToIntegration)}} class="integration-summary-tag integration-background-color integration-border-color">
         <span class="acronym integration-text-bold-color">{{block.acronym}}</span>
         <span class="integration-text-color">CVSSv2 Base Score: {{hit._source.cve.nist.cvssv2.base_score}}</span>
       </span>
     {{/if}}
     {{#if hit._source.cve.nist.cvssv3.base_score}}
-      <span class="integration-summary-tag integration-background-color integration-border-color">
+      <span {{on "click" (optional this.scrollToIntegration)}} class="integration-summary-tag integration-background-color integration-border-color">
         <span class="acronym integration-text-bold-color">{{block.acronym}}</span>
         <span class="integration-text-color">CVSSv3 Base Score: {{hit._source.cve.nist.cvssv3.base_score}}</span>
       </span>
     {{/if}}
     {{#if hit._source.nist.cvssv2.base_score}}
-      <span class="integration-summary-tag integration-background-color integration-border-color">
+      <span {{on "click" (optional this.scrollToIntegration)}} class="integration-summary-tag integration-background-color integration-border-color">
         <span class="acronym integration-text-bold-color">{{block.acronym}}</span>
         <span class="integration-text-color">CVSSv2 Base Score: {{hit._source.nist.cvssv2.base_score}}</span>
       </span>
     {{/if}}
     {{#if hit._source.nist.cvssv3.base_score}}
-      <span class="integration-summary-tag integration-background-color integration-border-color">
+      <span {{on "click" (optional this.scrollToIntegration)}} class="integration-summary-tag integration-background-color integration-border-color">
         <span class="acronym integration-text-bold-color">{{block.acronym}}</span>
         <span class="integration-text-color">CVSSv3 Base Score: {{hit._source.nist.cvssv3.base_score}}</span>
       </span>
     {{/if}}
   {{/each}}
 {{else}}
-  <span class="integration-summary-tag integration-background-color integration-border-color">
+  <span {{on "click" (optional this.scrollToIntegration)}} class="integration-summary-tag integration-background-color integration-border-color">
      <span class="acronym integration-text-bold-color">{{block.acronym}}</span>
      <span class="integration-text-color">Indicator Count: {{details.indicators.length}}</span>
   </span>
