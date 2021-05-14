@@ -282,6 +282,11 @@ function handleRestError(error, entity, res, body) {
       entity: entity,
       body: null
     };
+  } else if (res.statusCode === 429) {
+    result = {
+      error: '429 - Too Many Requests',
+      detail: res.body.detail
+    };
   } else if (res.statusCode === 202) {
     // no result found
     result = {
@@ -291,8 +296,8 @@ function handleRestError(error, entity, res, body) {
   } else {
     // unexpected status code
     result = {
-      error: body,
-      detail: `${body.error}: ${body.message}`
+      error: res.body.status,
+      detail: res.body.detail
     };
   }
   return result;
