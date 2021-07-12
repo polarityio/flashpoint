@@ -156,7 +156,13 @@ function doLookup(entities, options, cb) {
     }
 
     results.forEach((result) => {
-      if ((result.entity.type != 'cve' && (result.body === null || result.body.length === 0)) || (result.entity.type === 'cve' && (result.body === null || result.body.hits.total === 0))) {
+      const resultHasNoContent =
+        (_.get(result, 'entity.type') != 'cve' &&
+          (_.get(result, 'body') === null || _.get(result, 'body.length') === 0)) ||
+        (_.get(result, 'entity.type') === 'cve' &&
+          (_.get(result, 'body') === null || _.get(result, 'body.hits.total') === 0));
+
+      if (resultHasNoContent) {
         lookupResults.push({
           entity: result.entity,
           data: null
@@ -167,7 +173,7 @@ function doLookup(entities, options, cb) {
           data: {
             summary: [],
             details: {
-              indicators: result.body
+              indicators: _.get(result, 'body')
             }
           }
         });
@@ -296,7 +302,7 @@ function handleRestError(error, entity, res, body) {
   } else {
     // unexpected status code
     result = {
-      error: res.body.status,
+      error: res.body.status || 'Unexpected Error Occurred',
       detail: res.body.detail
     };
   }
