@@ -2,6 +2,7 @@ const request = require('request');
 const async = require('async');
 const fs = require('fs');
 const _ = require('lodash');
+const reduce = require('lodash/fp/reduce').convert({ cap: false });
 const config = require('./config/config');
 
 let Logger;
@@ -100,9 +101,11 @@ function _isInvalidEntity(entity) {
   return entity.isIPv4 && IGNORED_IPS.has(entity.value)
 }
 
-function doLookup(entities, options, cb) {
+function doLookup(entities, { url, ...options}, cb) {
   let lookupResults = [];
   let tasks = [];
+  
+  options.url = url.endsWith('/') ? url.slice(0, -1) : url;
 
   Logger.debug(entities);
 
@@ -120,10 +123,10 @@ function doLookup(entities, options, cb) {
 
       if (entity.isHash || entity.isIPv4 || entity.isDomain) {
         requestOptions.uri = `${options.url}/indicators/simple`,
-        requestOptions.qs = {query: `"${entity.value}"`, limit: options.limit}
+        requestOptions.qs = {query: `"${entity.value}"`, limit: options.limit.toString()}
       } else if (entity.isEmail) {
         requestOptions.uri = `${options.url}/indicators/simple`,
-        requestOptions.qs = {query: `${entity.value}`, limit: options.limit}
+        requestOptions.qs = {query: `${entity.value}`, limit: options.limit.toString()}
       } else if (entity.type === 'cve') {
         requestOptions.uri = `${options.url}/all/search`,
         requestOptions.qs = {query: `"${entity.value}"` + "+basetypes:(cve)", limit: 1}
@@ -194,7 +197,7 @@ function doReportLookup(entity, options) {
       },
       uri: `${options.url}/reports`,
       qs: {
-        limit: options.limit,
+        limit: options.limit.toString(),
         query: `"${entity.value}"`
       },
       json: true
@@ -222,7 +225,7 @@ function doPostsLookup(entity, options) {
       },
       uri: `${options.url}/forums/posts`,
       qs: {
-        limit: options.limit,
+        limit: options.limit.toString(),
         query: `"${entity.value}"`
       },
       json: true
@@ -309,8 +312,56 @@ function handleRestError(error, entity, res, body) {
   return result;
 }
 
+
+const validateOptions = (options, callback) => {
+  const stringOptionsErrorMessages = {
+    url: 'You must provide a valid Flashpoint URL',
+    apiKey: 'You must provide a valid API Key for Flashpoint',
+  };
+
+  const stringValidationErrors = _validateStringOptions(stringOptionsErrorMessages, options);
+
+  const urlValidationError = _validateUrlOption(options, 'url');
+
+  const limitLessThanOneError =
+    options.limit.value < 1
+      ? {
+          key: 'Result Limit must be greater than or equal to 1',
+          message: 'Limit'
+        }
+      : [];
+
+  callback(null, stringValidationErrors.concat(urlValidationError).concat(limitLessThanOneError));
+};
+
+const _validateStringOptions = (stringOptionsErrorMessages, options, otherErrors = []) =>
+  reduce((agg, message, optionKey) => {
+    const isString = typeof options[optionKey].value === 'string';
+    const isEmptyString = isString && _.isEmpty(options[optionKey].value);
+
+    return !isString || isEmptyString
+      ? agg.concat({
+          key: optionKey,
+          message
+        })
+      : agg;
+  }, otherErrors)(stringOptionsErrorMessages);
+
+const _validateUrlOption = (option, key) =>
+  option[key].value && option[key].value.endsWith('//')
+    ? [
+        {
+          key,
+          message: 'Your Url must not end with a //'
+        }
+      ]
+    : [];
+
+module.exports = validateOptions;
+
 module.exports = {
-  doLookup: doLookup,
-  onDetails: onDetails,
-  startup: startup
+  doLookup,
+  onDetails,
+  startup,
+  validateOptions
 };

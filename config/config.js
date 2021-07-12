@@ -110,8 +110,8 @@ module.exports = {
       key: 'limit',
       name: 'Result Limit',
       description: 'The maximum amount of results to be returned per query',
-      default: '10',
-      type: 'text',
+      default: 10,
+      type: 'number',
       userCanEdit: true,
       adminOnly: false
     },
