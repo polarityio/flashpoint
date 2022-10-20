@@ -39,17 +39,31 @@ pre{
   border: 1px solid #ddd;
 }
 
+.forum-post-header{
+  border: 1px solid #ccc;
+  border-bottom: none;
+  border-radius: 3px 3px 0px 0px;
+  padding: 5px;
+  margin-top: 10px;
+  background-color: #ddd;
+}
+
 .post-container{
-  background-color: #eee;
+  border: 1px solid #ccc;
+  border-radius: 0px 0px 3px 3px;
+  border-top: none;
   margin-bottom: 2px;
   padding: 5px;
   overflow-wrap: break-word;
-  margin-top: 5px;
   white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
+  resize: vertical;
 }
 
 .external-link-icon {
   font-size: 8px;
+  margin-bottom: 1px;
 }
 
 .email-container{
