@@ -306,7 +306,8 @@ function handleRestError(error, entity, res, body) {
     // unexpected status code
     result = {
       error: res.body.status || 'Unexpected Error Occurred',
-      detail: res.body.detail
+      detail: res.body.detail || res.body.message,
+      body
     };
   }
   return result;
