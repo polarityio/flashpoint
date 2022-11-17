@@ -1,4 +1,4 @@
-const request = require('request');
+const request = require('postman-request');
 const async = require('async');
 const fs = require('fs');
 const _ = require('lodash');
@@ -306,7 +306,9 @@ function handleRestError(error, entity, res, body) {
     // unexpected status code
     result = {
       error: res.body.status || 'Unexpected Error Occurred',
-      detail: res.body.detail
+      detail: res.body.detail || res.body.message || `Unexpected HTTP status code ${res.statusCode} received`,
+      statusCode: res.statusCode,
+      body
     };
   }
   return result;

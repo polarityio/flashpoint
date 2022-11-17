@@ -461,23 +461,18 @@
         <div class="mt-2">No Posts</div>
       {{/if}}
       {{#each details.posts.data as |object index|}}
-        {{#if (gt index 0)}}
-          <hr>
-        {{/if}}
-        <h1 class="p-title">
-            {{fa-icon "comments-alt" fixedWidth=true}} Forum Posts Detail
-        </h1>
-      	{{#if object.platform_url}}
-            <div>
-                <a href="{{object.platform_url}}" class="p-link">Pivot to Thread {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+        <div class="forum-post-header">
+          {{#if (or object.platform_url object.published_at)}}
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                  <a href="{{object.platform_url}}" class="p-link">Pivot to Thread {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+              </div>
+              <div>
+                  <span class="p-value">{{moment-format object.published_at "YYYY-MM-DD HH:mm:ss z" timeZone=timezone}}</span>
+              </div>
             </div>
-      	{{/if}}
-        {{#if object.published_at}}
-            <div>
-                <span class="p-key">Published At:</span>
-                <span class="p-value">{{object.published_at}}</span>
-            </div>
-        {{/if}}
+          {{/if}}
+        </div>
         {{#if object.body}}
           <div class="post-container">{{object.body}}</div>
         {{/if}}
