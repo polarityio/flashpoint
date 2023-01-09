@@ -1,0 +1,99 @@
+{
+  "name": "Flashpoint",
+  "acronym": "FP",
+  "description": "Flashpoint delivers Business Risk Intelligence (BRI) that empowers organizations worldwide to combat threats and adversaries",
+  "entityTypes": [
+    "IPv4",
+    "hash",
+    "domain",
+    "email",
+    "cve"
+  ],
+  "styles": [
+    "./styles/fp.less"
+  ],
+  "defaultColor": "light-pink",
+  "block": {
+    "component": {
+      "file": "./components/fp-block.js"
+    },
+    "template": {
+      "file": "./templates/fp-block.hbs"
+    }
+  },
+  "summary": {
+    "component": {
+      "file": "./components/fp-summary.js"
+    },
+    "template": {
+      "file": "./templates/fp-summary.hbs"
+    }
+  },
+  "request": {
+    "cert": "",
+    "key": "",
+    "passphrase": "",
+    "ca": "",
+    "proxy": "",
+    "rejectUnauthorized": true
+  },
+  "logging": {
+    "level": "info"
+  },
+  "options": [
+    {
+      "key": "url",
+      "name": "Flashpoint API URL",
+      "description": "The base URL of the Flashpoint API including the schema (i.e., https://)",
+      "default": "https://fp.tools/api/v4",
+      "type": "text",
+      "userCanEdit": false,
+      "adminOnly": true
+    },
+    {
+      "key": "apiKey",
+      "name": "API Key",
+      "description": "Valid Flashpoint API Key",
+      "default": "",
+      "type": "password",
+      "userCanEdit": true,
+      "adminOnly": false
+    },
+    {
+      "key": "limit",
+      "name": "Result Limit",
+      "description": "The maximum amount of results to be returned per query",
+      "default": 10,
+      "type": "number",
+      "userCanEdit": true,
+      "adminOnly": false
+    },
+    {
+      "key": "blocklist",
+      "name": "Ignore List",
+      "description": "Comma delimited List of domains and IPs that you never want to send to Flashpoint",
+      "default": "",
+      "type": "text",
+      "userCanEdit": false,
+      "adminOnly": false
+    },
+    {
+      "key": "domainBlocklistRegex",
+      "name": "Ignore Domain Regex",
+      "description": "Domains that match the given regex will not be looked up.",
+      "default": "",
+      "type": "text",
+      "userCanEdit": false,
+      "adminOnly": false
+    },
+    {
+      "key": "ipBlocklistRegex",
+      "name": "Ignore IP Regex",
+      "description": "IPs that match the given regex will not be looked up.",
+      "default": "",
+      "type": "text",
+      "userCanEdit": false,
+      "adminOnly": false
+    }
+  ]
+}
