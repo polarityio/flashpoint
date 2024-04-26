@@ -8,9 +8,9 @@ For more information on Flashpoint, please visit [official website](https://www.
 
 Check out the integration in action:
 
-| ![image](assets/overlay_indicators.png) | ![image](assets/overlay_reports.png) | ![image](assets/overlay_posts.png)
-|---| --- | --- |
-|*Flashpoint Indicator Information* | *Flashpoint Reports* | *Flashpoint Forum Posts* |
+| ![image](assets/overlay_indicators.png) | ![image](assets/overlay_reports.png) 
+| --- | --- |
+|*Flashpoint Indicator Information* | *Flashpoint Reports* |
 
 ## Flashpoint Integration Options
 

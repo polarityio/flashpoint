@@ -3,31 +3,14 @@
   "name": "Flashpoint",
   "acronym": "FP",
   "description": "Flashpoint delivers Business Risk Intelligence (BRI) that empowers organizations worldwide to combat threats and adversaries",
-  "entityTypes": [
-    "IPv4",
-    "hash",
-    "domain",
-    "email",
-    "cve"
-  ],
-  "styles": [
-    "./styles/fp.less"
-  ],
-  "defaultColor": "light-pink",
+  "entityTypes": ["IPv4", "hash", "domain", "email", "cve"],
+  "styles": ["./client/styles.less"],
   "block": {
     "component": {
-      "file": "./components/fp-block.js"
+      "file": "./client/block.js"
     },
     "template": {
-      "file": "./templates/fp-block.hbs"
-    }
-  },
-  "summary": {
-    "component": {
-      "file": "./components/fp-summary.js"
-    },
-    "template": {
-      "file": "./templates/fp-summary.hbs"
+      "file": "./client/block.hbs"
     }
   },
   "request": {
@@ -45,7 +28,7 @@
       "key": "url",
       "name": "Flashpoint API URL",
       "description": "The base URL of the Flashpoint API including the schema (i.e., https://)",
-      "default": "https://fp.tools/api/v4",
+      "default": "https://api.flashpoint.io",
       "type": "text",
       "userCanEdit": false,
       "adminOnly": true

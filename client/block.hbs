@@ -1,0 +1,596 @@
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a
+      {{action "changeTab" "indicators"}}
+      class="nav-link {{if (or (eq activeTab 'indicators') (not activeTab)) 'active'}}"
+      href="#"
+    >Indicators</a>
+  </li>
+  {{#if (or block.isLoadingDetails details.reports.length)}}
+    <li class="nav-item">
+      <a
+        {{action "changeTab" "reports"}}
+        class="nav-link {{if (eq activeTab 'reports') 'active'}}"
+        href="#"
+      >Reports
+        {{#if block.isLoadingDetails}}
+          {{fa-icon "spinner-third" fixedWidth=true spin=true}}
+        {{else}}
+          ({{details.reports.length}})
+        {{/if}}</a>
+    </li>
+  {{/if}}
+</ul>
+
+{{#if (eq activeTab "indicators")}}
+  {{#if details.noncommunitySearchResults}}
+    <div class="non-community-indicators">
+      {{#each details.noncommunitySearchResults as |hit index|}}
+        {{#if (gt index 0)}}
+          <hr />
+        {{/if}}
+        {{#if hit._source}}
+          <h1 class="p-title">
+            {{fa-icon "flame" fixedWidth=true}}
+            Indicator Detail
+          </h1>
+          {{#if hit._source.cve.href}}
+            <span class="p-key">Indicator Name:</span>
+            <a
+              href="{{hit._source.cve.href}}"
+              class="p-link"
+            >{{hit._source.title}}
+              {{fa-icon "external-link-square" class="external-link-icon"}}</a><br />
+          {{else}}
+            <span class="p-key">Indicator Name:</span>
+            <a
+              href="{{hit._source.href}}"
+              class="p-link"
+            >{{hit._source.title}}
+              {{fa-icon "external-link-square" class="external-link-icon"}}</a><br />
+          {{/if}}
+          {{#if hit._source.cve.mitre.body.raw}}
+            <span class="p-key">MITRE Description:</span>
+            <span class="p-value">{{hit._source.cve.mitre.body.raw}}<br /></span>
+          {{/if}}
+          {{#if hit._source.mitre.body.raw}}
+            <span class="p-key">MITRE Description:</span>
+            <span class="p-value">{{hit._source.mitre.body.raw}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.mitre.created_at.timestamp}}
+            <span class="p-key">MITRE Created At:</span>
+            <span class="p-value">{{moment-format
+                (unix hit._source.cve.mitre.created_at.timestamp)
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}<br /></span>
+          {{/if}}
+          {{#if hit._source.mitre.created_at.timestamp}}
+            <span class="p-key">MITRE Created At:</span>
+            <span class="p-value">{{moment-format
+                (unix hit._source.mitre.created_at.timestamp)
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.mitre.last_observed_at.timestamp}}
+            <span class="p-key">MITRE Last Observed At:</span>
+            <span class="p-value">{{moment-format
+                (unix hit._source.cve.mitre.last_observed_at.timestamp)
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}<br /></span>
+          {{/if}}
+          {{#if hit._source.mitre.last_observed_at.timestamp}}
+            <span class="p-key">MITRE Last Observed At:</span>
+            <span class="p-value">{{moment-format
+                (unix hit._source.mitre.last_observed_at.timestamp)
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.created_at.timestamp}}
+            <span class="p-key">NIST NVD Created At:</span>
+            <span class="p-value">{{moment-format
+                (unix hit._source.cve.nist.created_at.timestamp)
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}<br /></span>
+          {{/if}}
+          {{#if hit._source.nist.created_at.timestamp}}
+            <span class="p-key">NIST NVD Created At:</span>
+            <span class="p-value">{{moment-format
+                (unix hit._source.nist.created_at.timestamp)
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.last_observed_at.timestamp}}
+            <span class="p-key">NIST NVD Last Observed At:</span>
+            <span class="p-value">{{moment-format
+                (unix hit._source.cve.nist.last_observed_at.timestamp)
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}<br /></span>
+          {{/if}}
+          {{#if hit._source.nist.last_observed_at.timestamp}}
+            <span class="p-key">NIST NVD Last Observed At:</span>
+            <span class="p-value">{{moment-format
+                (unix hit._source.nist.last_observed_at.timestamp)
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2}}
+            <h1 class="p-title">{{fa-icon "star" fixedWidth=true}}CVSS v2 Detail: </h1>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2}}
+            <h1 class="p-title">{{fa-icon "star" fixedWidth=true}}CVSS v2 Detail: </h1>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.access_complexity}}
+            <span class="p-key">Complexity:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv2.access_complexity}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.access_complexity}}
+            <span class="p-key">Complexity:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.access_complexity}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.access_vector}}
+            <span class="p-key">Complexity:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv2.access_complexity}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.access_vector}}
+            <span class="p-key">Complexity:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.access_complexity}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.access_complexity}}
+            <span class="p-key">Vector:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv2.access_vector}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.access_complexity}}
+            <span class="p-key">Vector:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.access_vector}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.authentication}}
+            <span class="p-key">Authentication:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv2.authentication}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.authentication}}
+            <span class="p-key">Authentication:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.authentication}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.availability_impact}}
+            <span class="p-key">Availability Impact:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv2.availability_impact}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.availability_impact}}
+            <span class="p-key">Availability Impact:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.availability_impact}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.base_score}}
+            <span class="p-key">Base Score:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv2.base_score}}<br /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.base_score}}
+            <span class="p-key">Base Score:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.base_score}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.confidentiality_impact}}
+            <span class="p-key">Confidentiality Impact:</span>
+            <span
+              class="p-value"
+            >{{hit._source.cve.nist.cvssv2.confidentiality_impact}}<br /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.confidentiality_impact}}
+            <span class="p-key">Confidentiality Impact:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.confidentiality_impact}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.exploitability_score}}
+            <span class="p-key">Exploitability Score:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv2.exploitability_score}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.exploitability_score}}
+            <span class="p-key">Exploitability Score:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.exploitability_score}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.impact_score}}
+            <span class="p-key">Impact Score:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv2.impact_score}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.impact_score}}
+            <span class="p-key">Impact Score:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.impact_score}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.integrity_impact}}
+            <span class="p-key">Integrity Impact:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv2.integrity_impact}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.integrity_impact}}
+            <span class="p-key">Integrity Impact:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.integrity_impact}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.severity}}
+            <span class="p-key">Severity:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv2.severity}}<br /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.severity}}
+            <span class="p-key">Severity:</span>
+            <span class="p-value">{{hit._source.nist.cvssv2.severity}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv2.vector_string}}
+            <span class="p-key">Vector String:</span>
+            <a
+              href="https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator?vector=({{hit._source.cve.nist.cvssv2.vector_string}})"
+              class="p-link"
+            >{{hit._source.cve.nist.cvssv2.vector_string}}
+              {{fa-icon "external-link-square" class="external-link-icon"}}</a><br />
+          {{/if}}
+          {{#if hit._source.nist.cvssv2.vector_string}}
+            <span class="p-key">Vector String:</span>
+            <a
+              href="https://nvd.nist.gov/vuln-metrics/cvss/v2-calculator?vector=({{hit._source.nist.cvssv2.vector_string}})"
+              class="p-link"
+            >{{hit._source.nist.cvssv2.vector_string}}
+              {{fa-icon "external-link-square" class="external-link-icon"}}</a><br />
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3}}
+            <h1 class="p-title">{{fa-icon "stars" fixedWidth=true}}CVSS v3 Detail: </h1>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3}}
+            <h1 class="p-title">{{fa-icon "stars" fixedWidth=true}}CVSS v3 Detail: </h1>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.access_complexity}}
+            <span class="p-key">Complexity:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.access_complexity}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.access_complexity}}
+            <span class="p-key">Complexity:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.access_complexity}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.access_vector}}
+            <span class="p-key">Complexity:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.access_complexity}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.access_vector}}
+            <span class="p-key">Complexity:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.access_complexity}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.access_complexity}}
+            <span class="p-key">Vector:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.access_vector}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.access_complexity}}
+            <span class="p-key">Vector:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.access_vector}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.authentication}}
+            <span class="p-key">Authentication:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.authentication}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.authentication}}
+            <span class="p-key">Authentication:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.authentication}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.availability_impact}}
+            <span class="p-key">Availability Impact:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.availability_impact}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.availability_impact}}
+            <span class="p-key">Availability Impact:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.availability_impact}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.base_score}}
+            <span class="p-key">Base Score:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.base_score}}<br /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.base_score}}
+            <span class="p-key">Base Score:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.base_score}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.confidentiality_impact}}
+            <span class="p-key">Confidentiality Impact:</span>
+            <span
+              class="p-value"
+            >{{hit._source.cve.nist.cvssv3.confidentiality_impact}}<br /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.confidentiality_impact}}
+            <span class="p-key">Confidentiality Impact:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.confidentiality_impact}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.exploitability_score}}
+            <span class="p-key">Exploitability Score:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.exploitability_score}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.exploitability_score}}
+            <span class="p-key">Exploitability Score:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.exploitability_score}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.impact_score}}
+            <span class="p-key">Impact Score:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.impact_score}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.impact_score}}
+            <span class="p-key">Impact Score:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.impact_score}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.integrity_impact}}
+            <span class="p-key">Integrity Impact:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.integrity_impact}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.integrity_impact}}
+            <span class="p-key">Integrity Impact:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.integrity_impact}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.privileges_required}}
+            <span class="p-key">Privileges Required:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.privileges_required}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.privileges_required}}
+            <span class="p-key">Privileges Required:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.privileges_required}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.scope}}
+            <span class="p-key">Scope:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.scope}}<br /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.scope}}
+            <span class="p-key">Scope:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.scope}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.severity}}
+            <span class="p-key">Severity:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.severity}}<br /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.severity}}
+            <span class="p-key">Severity:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.severity}}<br /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.user_interaction}}
+            <span class="p-key">User Interaction:</span>
+            <span class="p-value">{{hit._source.cve.nist.cvssv3.user_interaction}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.user_interaction}}
+            <span class="p-key">User Interaction:</span>
+            <span class="p-value">{{hit._source.nist.cvssv3.user_interaction}}<br
+              /></span>
+          {{/if}}
+          {{#if hit._source.cve.nist.cvssv3.vector_string}}
+            <span class="p-key">Vector String:</span>
+            <a
+              href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector={{hit._source.cve.nist.cvssv3.vector_string}}"
+              class="p-link"
+            >{{hit._source.cve.nist.cvssv3.vector_string}}
+              {{fa-icon "external-link-square" class="external-link-icon"}}</a><br />
+          {{/if}}
+          {{#if hit._source.nist.cvssv3.vector_string}}
+            <span class="p-key">Vector String:</span>
+            <a
+              href="https://nvd.nist.gov/vuln-metrics/cvss/v3-calculator?vector={{hit._source.nist.cvssv3.vector_string}}"
+              class="p-link"
+            >{{hit._source.nist.cvssv3.vector_string}}
+              {{fa-icon "external-link-square" class="external-link-icon"}}</a><br />
+          {{/if}}
+          {{#if hit._source.cve.nist.configurations}}
+            <h1 class="p-title">{{fa-icon "bug" fixedWidth=true}}CPEs: </h1>
+            {{#each hit._source.cve.nist.configurations as |cpe|}}
+              <span class="source-tag">{{cpe.cpe23_uri}}</span>
+            {{/each}}
+          {{/if}}
+          {{#if hit._source.nist.configurations}}
+            <h1 class="p-title">{{fa-icon "bug" fixedWidth=true}}CPEs: </h1>
+            {{#each hit._source.nist.configurations as |cpe|}}
+              <span class="source-tag">{{cpe.cpe23_uri}}</span>
+            {{/each}}
+          {{/if}}
+          {{#if hit._source.cve.nist.products}}
+            <h1 class="p-title">{{fa-icon "box-open" fixedWidth=true}}Products: </h1>
+            {{#each hit._source.cve.nist.products as |product|}}
+              <span class="source-tag">{{product.vendor_name}}
+                {{product.product_name}}</span>
+            {{/each}}
+          {{/if}}
+          {{#if hit._source.nist.products}}
+            <h1 class="p-title">{{fa-icon "box-open" fixedWidth=true}}Products: </h1>
+            {{#each hit._source.nist.products as |product|}}
+              <span class="source-tag">{{product.vendor_name}}
+                {{product.product_name}}</span>
+            {{/each}}
+          {{/if}}
+          {{#if hit._source.cve.nist.references}}
+            <h1 class="p-title">{{fa-icon "browser" fixedWidth=true}}External References:
+            </h1>
+            <div>
+              {{#each hit._source.cve.nist.references as |ref|}}
+                <span class="p-value"><a href="{{ref.url}}">{{ref.url}}
+                    {{fa-icon
+                      "external-link-square"
+                      class="external-link-icon"
+                    }}</a></span><br />
+              {{/each}}
+            </div>
+          {{/if}}
+          {{#if hit._source.nist.references}}
+            <h1 class="p-title">{{fa-icon "browser" fixedWidth=true}}External References:
+            </h1>
+            <div>
+              {{#each hit._source.nist.references as |ref|}}
+                <span class="p-value"><a href="{{ref.url}}">{{ref.url}}
+                    {{fa-icon
+                      "external-link-square"
+                      class="external-link-icon"
+                    }}</a></span><br />
+              {{/each}}
+            </div>
+          {{/if}}
+        {{/if}}
+      {{/each}}
+    </div>
+  {{/if}}
+
+  {{#if details.indicators}}
+    <div class="indicators">
+      {{#each details.indicators as |object index|}}
+        {{#if (gt index 0)}}
+          <hr />
+        {{/if}}
+        {{#if object.Attribute.Event}}
+          <h1 class="p-title">
+            {{fa-icon "flame" fixedWidth=true}}
+            Indicator Detail
+          </h1>
+          {{#if object.Attribute.type}}
+            <span class="p-key">Indicator Type:</span>
+            <span class="p-value">{{object.Attribute.type}}<br /></span>
+          {{/if}}
+          {{#if object.Attribute.category}}
+            <span class="p-key">Category:</span>
+            <span class="p-value">{{object.Attribute.category}}<br /></span>
+          {{/if}}
+          {{#if object.Attribute.timestamp}}
+            <span class="p-key">Indicator Timestamp:</span>
+            <span class="p-value">{{moment-format
+                (unix object.Attribute.timestamp)
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}<br /></span>
+          {{/if}}
+          {{#if object.Attribute.category}}
+            <span class="p-key">Category:</span>
+            <span class="p-value">{{object.Attribute.category}}<br /></span>
+          {{/if}}
+          {{#if object.Attribute.Event.info}}
+            <div class="related-to">
+              <span class="p-key">Related to:</span>
+              {{#if object.Attribute.Event.href}}
+                <a
+                  href="{{object.Attribute.Event.href}}"
+                  class="p-link"
+                >{{object.Attribute.Event.info}}</a>
+              {{else}}
+                <span class="p-value">{{object.Attribute.Event.info}}</span>
+              {{/if}}
+            </div>
+          {{/if}}
+          {{#if object.Attribute.value.comment}}
+            <span class="p-key">Comment:</span>
+            <span class="p-value">{{object.Attribute.value.comment}}<br /></span>
+          {{/if}}
+          {{#if object.Attribute.value.url}}
+            <span class="p-key">URL:</span>
+            <span class="p-value">{{object.Attribute.value.url}}<br /></span>
+          {{/if}}
+          {{#if object.Attribute.value.domain}}
+            <span class="p-key">Domain:</span>
+            <span class="p-value">{{object.Attribute.value.domain}}<br /></span>
+          {{/if}}
+          {{#if object.Attribute.value.md5}}
+            <span class="p-key">MD5:</span>
+            <span class="p-value">{{object.Attribute.value.md5}}<br /></span>
+          {{/if}}
+          {{#if object.Attribute.value.sha1}}
+            <span class="p-key">SHA-1:</span>
+            <span class="p-value">{{object.Attribute.value.sha1}}<br /></span>
+          {{/if}}
+          {{#if object.Attribute.value.sha256}}
+            <span class="p-key">SHA-256:</span>
+            <span class="p-value">{{object.Attribute.value.sha256}}<br /></span>
+          {{/if}}
+          {{#if object.Attribute.value.other}}
+            <span class="p-key">Other:</span>
+            <span class="p-value">{{object.Attribute.value.other}}<br /></span>
+          {{/if}}
+        {{/if}}
+      {{/each}}
+    </div>
+  {{/if}}
+{{/if}}
+
+{{#if (eq activeTab "reports")}}
+  {{#if block.isLoadingDetails}}
+    <div class="mt-1 ml-1">
+      {{fa-icon "spinner-third" size="lg" fixedWidth=true spin=true}}
+    </div>
+  {{else}}
+    {{#if details.reports}}
+      {{#if (eq details.reports.length 0)}}
+        <div class="mt-2">No Reports</div>
+      {{/if}}
+      {{#each details.reports as |object index|}}
+        {{#if (gt index 0)}}
+          <hr />
+        {{/if}}
+        <h1 class="p-title">
+          {{fa-icon "book-open" fixedWidth=true}}
+          Report Detail
+        </h1>
+        {{#if object.title}}
+          <div>
+            <span class="p-key">Title:</span>
+            <a href="{{object.platform_url}}" class="p-link">{{object.title}}
+              {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+          </div>
+        {{/if}}
+        {{#if object.summary}}
+          <div>
+            <span class="p-key">Summary:</span>
+            <span class="p-value">{{object.summary}}<br /></span>
+          </div>
+        {{/if}}
+        {{#if object.posted_at}}
+          <div>
+            <span class="p-key">Posted:</span>
+            <span class="p-value">{{object.posted_at}}<br /></span>
+          </div>
+        {{/if}}
+        {{#if object.updated_at}}
+          <div>
+            <span class="p-key">Last Updated:</span>
+            <span class="p-value">{{object.updated_at}}<br /></span>
+          </div>
+        {{/if}}
+        {{#if object.tags}}
+          <h1 class="p-title">
+            {{fa-icon "tags" fixedWidth=true}}
+            Report Tags
+          </h1>
+          <div>
+            {{#each object.tags as |tag|}}
+              <span class="tag">{{tag}}</span>
+            {{/each}}
+          </div>
+        {{/if}}
+      {{/each}}
+    {{/if}}
+  {{/if}}
+{{/if}}
