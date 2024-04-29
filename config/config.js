@@ -5,6 +5,7 @@ module.exports = {
     'Flashpoint delivers Business Risk Intelligence (BRI) that empowers organizations worldwide to combat threats and adversaries',
   entityTypes: ['IPv4', 'hash', 'domain', 'email', 'cve'],
   styles: ['./client/styles.less'],
+  defaultColor: 'light-blue',
   block: {
     component: {
       file: './client/block.js'
