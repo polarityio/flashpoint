@@ -17,7 +17,7 @@ const getIndicators = async (entities, options) => {
         route: `technical-intelligence/v1/simple`,
         qs: {
           query:
-            entity.isHash || entity.isIPv4 || entity.isDomain
+            entity.isHash || entity.isIPv4 || entity.isDomain || entity.isEmail
               ? `"${entity.value}"`
               : entity.value
         },
