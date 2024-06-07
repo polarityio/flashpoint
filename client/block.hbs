@@ -464,72 +464,90 @@
         {{#if (gt index 0)}}
           <hr />
         {{/if}}
-        {{#if object.Attribute.Event}}
-          <h1 class="p-title">
-            {{fa-icon "flame" fixedWidth=true}}
-            Indicator Detail
-          </h1>
-          <div>
-            <a href="https://app.flashpoint.io/cti/malware/iocs/{{object.Attribute.fpid}}" class="p-link">View IOC in Flashpoint {{fa-icon "external-link-square" class="external-link-icon"}}</a>
-          </div>
-          {{#if object.Attribute.type}}
-            <span class="p-key">Indicator Type:</span>
-            <span class="p-value">{{object.Attribute.type}}<br /></span>
-          {{/if}}
-          {{#if object.Attribute.category}}
-            <span class="p-key">Category:</span>
-            <span class="p-value">{{object.Attribute.category}}<br /></span>
-          {{/if}}
-          {{#if object.Attribute.timestamp}}
-            <span class="p-key">Indicator Timestamp:</span>
-            <span class="p-value">{{moment-format
-                (unix object.Attribute.timestamp)
-                "YYYY-MM-DD HH:mm:ss z"
-                timeZone=timezone
-              }}<br /></span>
-          {{/if}}
-          {{#if object.Attribute.Event.info}}
-            <div class="related-to">
-              <span class="p-key">Related to:</span>
-              {{#if object.Attribute.Event.href}}
-                <a
-                  href="{{object.Attribute.Event.href}}"
-                  class="p-link"
-                >{{object.Attribute.Event.info}}</a>
-              {{else}}
-                <span class="p-value">{{object.Attribute.Event.info}}</span>
-              {{/if}}
-            </div>
-          {{/if}}
-          {{#if object.Attribute.value.comment}}
-            <span class="p-key">Comment:</span>
-            <span class="p-value">{{object.Attribute.value.comment}}<br /></span>
-          {{/if}}
-          {{#if object.Attribute.value.url}}
-            <span class="p-key">URL:</span>
-            <span class="p-value">{{object.Attribute.value.url}}<br /></span>
-          {{/if}}
-          {{#if object.Attribute.value.domain}}
-            <span class="p-key">Domain:</span>
-            <span class="p-value">{{object.Attribute.value.domain}}<br /></span>
-          {{/if}}
-          {{#if object.Attribute.value.md5}}
-            <span class="p-key">MD5:</span>
-            <span class="p-value">{{object.Attribute.value.md5}}<br /></span>
-          {{/if}}
-          {{#if object.Attribute.value.sha1}}
-            <span class="p-key">SHA-1:</span>
-            <span class="p-value">{{object.Attribute.value.sha1}}<br /></span>
-          {{/if}}
-          {{#if object.Attribute.value.sha256}}
-            <span class="p-key">SHA-256:</span>
-            <span class="p-value">{{object.Attribute.value.sha256}}<br /></span>
-          {{/if}}
-          {{#if object.Attribute.value.other}}
-            <span class="p-key">Other:</span>
-            <span class="p-value">{{object.Attribute.value.other}}<br /></span>
-          {{/if}}
+        <h1 class="p-title">
+          {{fa-icon "flame" fixedWidth=true}}
+          Indicator Detail
+        </h1>
+        <div class="mb-1">
+          <a href="https://app.flashpoint.io/cti/malware/iocs/{{object.Attribute.fpid}}" class="p-link">View IOC in Flashpoint {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+        </div>
+
+        {{#if object.Attribute.type}}
+          <span class="p-key">Indicator Type:</span>
+          <span class="p-value">{{object.Attribute.type}}<br /></span>
         {{/if}}
+
+        {{#if object.Attribute.category}}
+          <span class="p-key">Category:</span>
+          <span class="p-value">{{object.Attribute.category}}<br /></span>
+        {{/if}}
+
+        {{#if object.Attribute.timestamp}}
+          <span class="p-key">Indicator Timestamp:</span>
+          <span class="p-value">{{moment-format
+              (unix object.Attribute.timestamp)
+              "YYYY-MM-DD HH:mm:ss z"
+              timeZone=timezone
+            }}<br /></span>
+        {{/if}}
+
+        {{#if object.Attribute.Event.info}}
+          <div class="related-to">
+            <span class="p-key">Related to:</span>
+            {{#if object.Attribute.Event.href}}
+              <a
+                href="{{object.Attribute.Event.href}}"
+                class="p-link"
+              >{{object.Attribute.Event.info}}</a>
+            {{else}}
+              <span class="p-value">{{object.Attribute.Event.info}}</span>
+            {{/if}}
+          </div>
+        {{/if}}
+
+        {{#if object.Attribute.value.comment}}
+          <span class="p-key">Comment:</span>
+          <span class="p-value">{{object.Attribute.value.comment}}<br /></span>
+        {{/if}}
+
+        {{#if object.Attribute.value.url}}
+          <span class="p-key">URL:</span>
+          <span class="p-value">{{object.Attribute.value.url}}<br /></span>
+        {{/if}}
+
+        {{#if object.Attribute.value.domain}}
+          <span class="p-key">Domain:</span>
+          <span class="p-value">{{object.Attribute.value.domain}}<br /></span>
+        {{/if}}
+
+        {{#if object.Attribute.value.md5}}
+          <span class="p-key">MD5:</span>
+          <span class="p-value">{{object.Attribute.value.md5}}<br /></span>
+        {{/if}}
+
+        {{#if object.Attribute.value.sha1}}
+          <span class="p-key">SHA-1:</span>
+          <span class="p-value">{{object.Attribute.value.sha1}}<br /></span>
+        {{/if}}
+
+        {{#if object.Attribute.value.sha256}}
+          <span class="p-key">SHA-256:</span>
+          <span class="p-value">{{object.Attribute.value.sha256}}<br /></span>
+        {{/if}}
+
+        {{#if object.Attribute.value.other}}
+          <span class="p-key">Other:</span>
+          <span class="p-value">{{object.Attribute.value.other}}<br /></span>
+        {{/if}}
+
+        {{#if (gt object.Attribute.Event.Tags.length 0)}}
+          <div class="mt-1">
+            {{#each object.Attribute.Event.Tags as | tag |}}
+              <span class="tag">{{tag}}</span>
+            {{/each}}
+          </div>
+        {{/if}}
+
       {{/each}}
     </div>
   {{/if}}
