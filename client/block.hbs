@@ -469,6 +469,9 @@
             {{fa-icon "flame" fixedWidth=true}}
             Indicator Detail
           </h1>
+          <div>
+            <a href="https://app.flashpoint.io/cti/malware/iocs/{{object.Attribute.fpid}}" class="p-link">View IOC in Flashpoint {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+          </div>
           {{#if object.Attribute.type}}
             <span class="p-key">Indicator Type:</span>
             <span class="p-value">{{object.Attribute.type}}<br /></span>
