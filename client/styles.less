@@ -10,6 +10,15 @@ pre{
   margin-top: 5px;
 }
 
+.p-block {
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.p-wrap {
+  word-break: break-all;
+}
+
 .source-tag {
   background-color: #cbd0d0;
   padding: 3px 5px;
@@ -18,6 +27,32 @@ pre{
   margin: 0 2px 5px 0;
   display: inline-block;
   font-weight: normal;
+}
+
+.card {
+  margin-bottom: 10px;
+  border-radius: 3px;
+  border: 1px solid #eee;
+
+  &:last-child {
+    margin-bottom: 0px;
+  }
+
+  .card-title {
+    border-bottom: 1px solid #eee;
+    margin: 0px;
+    padding: 3px 5px 3px 5px;
+    font-weight: 500;
+  }
+
+  .card-item {
+    padding: 3px 5px 3px 5px;
+  }
+}
+
+.scrollable {
+  overflow-y: scroll;
+  max-height: 200px;
 }
 
 .tag {

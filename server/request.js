@@ -2,7 +2,8 @@ const { map, get, getOr, filter, flow, negate, isEmpty } = require('lodash/fp');
 const { parallelLimit } = require('async');
 
 const {
-  requests: { createRequestWithDefaults }
+  requests: { createRequestWithDefaults },
+  logging: { setLogger, getLogger }
 } = require('polarity-integration-utils');
 const config = require('../config/config');
 
@@ -10,9 +11,9 @@ const requestWithDefaults = createRequestWithDefaults({
   config,
   roundedSuccessStatusCodes: [200],
   requestOptionsToOmitFromLogsKeyPaths: ['headers.Authorization'],
-  preprocessRequestOptions: async ({ route, options, ...requestOptions }) => ({
+  preprocessRequestOptions: async ({ route, url, options, ...requestOptions }) => ({
     ...requestOptions,
-    url: `${options.url}/${route}`,
+    url: route ? `${options.url}/${route}` : url,
     headers: {
       ...requestOptions.headers,
       Authorization: 'Bearer ' + options.apiKey
@@ -24,16 +25,19 @@ const requestWithDefaults = createRequestWithDefaults({
     json: true
   }),
   postprocessRequestFailure: (error) => {
-    if([404,202].includes(error.status)) return null;
+    if ([404, 202].includes(error.status)) return null;
 
-    const errorResponseBody = JSON.parse(error.description);
-    error.message = `${error.message} - (${error.status})${
-      errorResponseBody.message || errorResponseBody.errorMessage
-        ? `| ${errorResponseBody.message || errorResponseBody.errorMessage}`
-        : ''
-    }`;
-
-    throw error;
+    try {
+      const errorResponseBody = JSON.parse(error.description);
+      error.message = `${error.message} - (${error.status})${
+        errorResponseBody.message || errorResponseBody.errorMessage
+          ? `| ${errorResponseBody.message || errorResponseBody.errorMessage}`
+          : ''
+      }`;
+      throw error;
+    } catch (parseError) {
+      throw error;
+    }
   }
 });
 

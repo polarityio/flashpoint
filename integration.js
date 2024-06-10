@@ -12,6 +12,7 @@ const {
   removeBlocklistedIpsAndDomains
 } = require('./server/dataTransformations');
 const {
+  getEvent,
   getIndicators,
   getReports,
   getNoncommunitySearchResults
@@ -22,7 +23,7 @@ const assembleLookupResults = require('./server/assembleLookupResults');
 const doLookup = async (entities, options, cb) => {
   const Logger = getLogger();
   try {
-    Logger.debug({ entities }, 'Entities');
+    Logger.trace({ entities }, 'doLookup');
 
     const entitiesWithoutBlocklistedEntities = removeBlocklistedIpsAndDomains(
       entities,
@@ -62,6 +63,20 @@ const doLookup = async (entities, options, cb) => {
   }
 };
 
+const onMessage = async (payload, options, cb) => {
+  const Logger = getLogger();
+  Logger.trace({ payload }, 'onMessage');
+  try {
+    const event = await getEvent(payload.eventLink, options);
+    cb(null, event);
+  } catch (error) {
+    const err = parseErrorToReadableJson(error);
+
+    Logger.error({ error, formattedError: err }, 'Get Event Details Failed');
+    cb(err);
+  }
+};
+
 const onDetails = async (lookupObject, options, cb) => {
   const Logger = getLogger();
   try {
@@ -79,8 +94,8 @@ const onDetails = async (lookupObject, options, cb) => {
   } catch (error) {
     const err = parseErrorToReadableJson(error);
 
-    Logger.error({ error, formattedError: err }, 'Get Lookup Results Failed');
-    cb(error);
+    Logger.error({ error, formattedError: err }, 'Get Reports Failed');
+    cb(err);
   }
 };
 
@@ -88,5 +103,6 @@ module.exports = {
   startup: setLogger,
   validateOptions,
   doLookup,
-  onDetails
+  onDetails,
+  onMessage
 };

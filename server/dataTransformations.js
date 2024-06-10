@@ -19,6 +19,11 @@ const {
   size
 } = require('lodash/fp');
 
+const {
+  logging: { setLogger, getLogger },
+  errors: { parseErrorToReadableJson }
+} = require('polarity-integration-utils');
+
 const isPrivateIP = (ip) => {
   var parts = ip.split('.');
   return (
@@ -106,8 +111,13 @@ const removeBlocklistedIpsAndDomains = (entities, options) => {
   return entitiesNotInBlocklist;
 };
 
-const setupBlocklistRegex = (key, options) =>
-  flow(get(key), size)(options) === 0 && new RegExp(options.domainBlocklistRegex, 'i');
+const setupBlocklistRegex = (key, options) => {
+  if (size(options[key]) === 0) {
+    return null;
+  } else {
+    return new RegExp(options[key], 'i');
+  }
+};
 
 module.exports = {
   removePrivateIps,
