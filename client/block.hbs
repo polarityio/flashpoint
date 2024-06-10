@@ -529,6 +529,16 @@
           {{/if}}
         {{/if}}
 
+        {{#if object._eventEnrichedError}}
+          <div class="alert alert-danger mt-2 error-container">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="error-title">{{fa-icon icon="exclamation-triangle" fixedWidth=true}} Error Fetching Event Data</div>
+              {{fa-icon icon="times" fixedWidth=true class="error-close" click=(action "clearError" index)}}
+            </div>
+            <div class="error-item">{{object._eventEnrichedError}}</div>
+          </div>
+        {{/if}}
+
         {{#if (and object._eventEnriched object._eventOpen)}}
           <div class="mt-2">
             {{#if object._eventEnriched.malware_description}}

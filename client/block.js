@@ -13,6 +13,9 @@ polarity.export = PolarityComponent.extend({
     changeTab: function (tabName) {
       this.set('activeTab', tabName);
     },
+    clearError: function (index) {
+      this.set(`details.indicators.${index}._eventEnrichedError`, '');
+    },
     toggleEventDetails: function (eventLink, index) {
       this.toggleProperty(`details.indicators.${index}._eventOpen`);
 
@@ -33,7 +36,7 @@ polarity.export = PolarityComponent.extend({
             console.error('Error fetching event details', error);
             this.set(
               `details.indicators.${index}._eventEnrichedError`,
-              'Error fetching event details'
+              JSON.stringify(error, null, 2)
             );
           })
           .finally(() => {
