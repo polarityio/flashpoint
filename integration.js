@@ -15,7 +15,7 @@ const {
   getEvent,
   getIndicators,
   getReports,
-  getNoncommunitySearchResults
+  getVulnerability
 } = require('./server/queries');
 
 const assembleLookupResults = require('./server/assembleLookupResults');
@@ -35,20 +35,20 @@ const doLookup = async (entities, options, cb) => {
     const nonCveEntities = removeEntityTypes('cve', searchableEntities);
     const cveEntities = getEntityTypes('cve', searchableEntities);
 
-    const [indicators, noncommunitySearchResults] = await Promise.all([
+    const [indicators, vulnResults] = await Promise.all([
       getIndicators(nonCveEntities, options),
-      getNoncommunitySearchResults(cveEntities, options)
+      getVulnerability(cveEntities, options)
     ]);
 
     Logger.trace({
       indicators,
-      noncommunitySearchResults
+      vulnResults
     });
 
     const lookupResults = assembleLookupResults(
       entities,
       indicators,
-      noncommunitySearchResults,
+      vulnResults,
       options
     );
 

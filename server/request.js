@@ -19,7 +19,6 @@ const requestWithDefaults = createRequestWithDefaults({
       Authorization: 'Bearer ' + options.apiKey
     },
     qs: {
-      limit: options.limit,
       ...requestOptions.qs
     },
     json: true

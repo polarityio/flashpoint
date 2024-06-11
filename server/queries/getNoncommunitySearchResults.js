@@ -7,6 +7,7 @@ const {
 
 const { requestsInParallel } = require('../request');
 
+// This route not currently used.
 const getNoncommunitySearchResults = async (cveEntities, options) => {
   const Logger = getLogger();
 
@@ -16,6 +17,7 @@ const getNoncommunitySearchResults = async (cveEntities, options) => {
         resultId: entity.value,
         route: `sources/v1/noncommunities/search`,
         qs: {
+          limit: options.limit,
           query: `"${entity.value}"+basetypes:vulnerability`
         },
         options

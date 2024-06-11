@@ -16,6 +16,7 @@ const getReports = async (entity, options) => {
       await requestWithDefaults({
         route: `finished-intelligence/v1/reports`,
         qs: {
+          limit: options.limit,
           query: entity.value
         },
         options

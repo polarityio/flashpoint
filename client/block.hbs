@@ -23,137 +23,104 @@
 </ul>
 
 {{#if (eq activeTab "indicators")}}
-  {{#if details.noncommunitySearchResults}}
+  {{#if details.vulnerabilities}}
     <div class="non-community-indicators">
-      {{#each details.noncommunitySearchResults as |hit index|}}
+      {{#each details.vulnerabilities as |hit index|}}
         {{#if (gt index 0)}}
           <hr />
         {{/if}}
-        {{#if hit._source}}
-          <h1 class="p-title">
-            {{fa-icon "flame" fixedWidth=true}}
-            Indicator Detail
-          </h1>
-          {{#if hit._source.cve.href}}
-            <span class="p-key">Indicator Name:</span>
-            <a
-              href="{{hit._source.cve.href}}"
-              class="p-link"
-            >
-              {{hit._source.title}}
-              {{fa-icon "external-link-square" class="external-link-icon"}}
-            </a>
-          {{else}}
-            <span class="p-key">Indicator Name:</span>
-            <a
-              href="{{hit._source.href}}"
-              class="p-link"
-            >
-              {{hit._source.title}}
-              {{fa-icon "external-link-square" class="external-link-icon"}}
-            </a>
-          {{/if}}
-          {{#if hit._source.cve.mitre.body.raw}}
-            <div>
-              <span class="p-key">MITRE Description:</span>
-              <span class="p-value">{{hit._source.cve.mitre.body.raw}}</span>
-            </div>
-          {{/if}}
-          {{#if hit._source.mitre.body.raw}}
-            <div>
-              <span class="p-key">MITRE Description:</span>
-              <span class="p-value">{{hit._source.mitre.body.raw}}</span>
-            </div>
-          {{/if}}
-          {{#if hit._source.cve.mitre.created_at.timestamp}}
-            <div>
-              <span class="p-key">MITRE Created At:</span>
-              <span class="p-value">
-                {{moment-format
-                  (unix hit._source.cve.mitre.created_at.timestamp)
-                  "YYYY-MM-DD HH:mm:ss z"
-                  timeZone=timezone
-                }}
-              </span>
-            </div>
-          {{/if}}
-          {{#if hit._source.mitre.created_at.timestamp}}
-            <div>
-              <span class="p-key">MITRE Created At:</span>
-              <span class="p-value">{{moment-format
-                  (unix hit._source.mitre.created_at.timestamp)
-                  "YYYY-MM-DD HH:mm:ss z"
-                  timeZone=timezone
-                }}
-              </span>
-            </div>
-          {{/if}}
-          {{#if hit._source.cve.mitre.last_observed_at.timestamp}}
-            <div>
-              <span class="p-key">MITRE Last Observed At:</span>
-              <span class="p-value">
-                {{moment-format
-                  (unix hit._source.cve.mitre.last_observed_at.timestamp)
-                  "YYYY-MM-DD HH:mm:ss z"
-                  timeZone=timezone
-                }}
-              </span>
-            </div>
-          {{/if}}
-          {{#if hit._source.mitre.last_observed_at.timestamp}}
-            <div>
-              <span class="p-key">MITRE Last Observed At:</span>
-              <span class="p-value">{{moment-format
-                  (unix hit._source.mitre.last_observed_at.timestamp)
-                  "YYYY-MM-DD HH:mm:ss z"
-                  timeZone=timezone
-                }}
-              </span>
-            </div>
-          {{/if}}
-          {{#if hit._source.cve.nist.created_at.timestamp}}
-            <div>
-              <span class="p-key">NIST NVD Created At:</span>
-              <span class="p-value">{{moment-format
-                  (unix hit._source.cve.nist.created_at.timestamp)
-                  "YYYY-MM-DD HH:mm:ss z"
-                  timeZone=timezone
-                }}
-              </span>
-            </div>
-          {{/if}}
-          {{#if hit._source.nist.created_at.timestamp}}
-            <div>
-              <span class="p-key">NIST NVD Created At:</span>
-              <span class="p-value">
-                {{moment-format
-                  (unix hit._source.nist.created_at.timestamp)
-                  "YYYY-MM-DD HH:mm:ss z"
-                  timeZone=timezone
-                }}
-              </span>
-            </div>
-          {{/if}}
-          {{#if hit._source.cve.nist.last_observed_at.timestamp}}
-            <div>
-              <span class="p-key">NIST NVD Last Observed At:</span>
-              <span class="p-value">{{moment-format
-                  (unix hit._source.cve.nist.last_observed_at.timestamp)
-                  "YYYY-MM-DD HH:mm:ss z"
-                  timeZone=timezone
-                }}</span>
-            </div>
-          {{/if}}
-          {{#if hit._source.nist.last_observed_at.timestamp}}
-            <div>
-              <span class="p-key">NIST NVD Last Observed At:</span>
-              <span class="p-value">{{moment-format
-                  (unix hit._source.nist.last_observed_at.timestamp)
-                  "YYYY-MM-DD HH:mm:ss z"
-                  timeZone=timezone
-                }}</span>
-            </div>
-          {{/if}}
+        <h1 class="p-title">
+          {{fa-icon "flame" fixedWidth=true}}
+          Vulnerability Detail
+        </h1>
+        {{#if hit.title}}
+          <div>
+            <span class="p-key">Title:</span>
+            <span class="p-value p-block">{{hit.title}}</span>
+          </div>
+        {{/if}}
+
+        {{#if hit.keywords}}
+          <div>
+            <span class="p-key">Keywords:</span>
+            <span class="p-value p-block">{{hit.keywords}}</span>
+          </div>
+        {{/if}}
+
+        {{#if hit.description}}
+          <div>
+            <span class="p-key">Description:</span>
+            <span class="p-value p-block">{{hit.description}}</span>
+          </div>
+        {{/if}}
+
+        {{#if hit.solution}}
+          <div>
+            <span class="p-key">Solution:</span>
+            <span class="p-value p-block">{{hit.solution}}</span>
+          </div>
+        {{/if}}
+
+        {{#if hit.timelines.disclosed_at}}
+          <div>
+            <span class="p-key">Disclosed at:</span>
+            <span class="p-value">
+              {{moment-format
+                hit.timelines.disclosed_at
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}
+            </span>
+          </div>
+        {{/if}}
+
+        {{#if hit.timelines.published_at}}
+          <div>
+            <span class="p-key">Published at:</span>
+            <span class="p-value">
+              {{moment-format
+                hit.timelines.published_at
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}
+            </span>
+          </div>
+        {{/if}}
+
+        {{#if hit.timelines.last_modified_at}}
+          <div>
+            <span class="p-key">Last modified:</span>
+            <span class="p-value">
+              {{moment-format
+                hit.timelines.last_modified_at
+                "YYYY-MM-DD HH:mm:ss z"
+                timeZone=timezone
+              }}
+            </span>
+          </div>
+        {{/if}}
+
+        {{#if hit.scores.epss_score}}
+          <div>
+            <span class="p-key">EPSS Score:</span>
+            <span class="p-value p-block">{{hit.scores.epss_score}}</span>
+          </div>
+        {{/if}}
+
+        {{#if hit.scores.severity}}
+          <div>
+            <span class="p-key">Severity:</span>
+            <span class="p-value p-block">{{hit.scores.severity}}</span>
+          </div>
+        {{/if}}
+
+        {{#if hit.vuln_status}}
+          <div>
+            <span class="p-key">Status:</span>
+            <span class="p-value p-block">{{hit.vuln_status}}</span>
+          </div>
+        {{/if}}
+
           {{#if hit._source.cve.nist.cvssv2}}
             <h1 class="p-title">{{fa-icon "star" fixedWidth=true}}CVSS v2 Detail: </h1>
           {{/if}}
@@ -389,6 +356,7 @@
             <span class="p-key">User Interaction:</span>
             <span class="p-value">{{hit._source.nist.cvssv3.user_interaction}}</span>
           {{/if}}
+
           {{#if hit._source.cve.nist.cvssv3.vector_string}}
             <span class="p-key">Vector String:</span>
             <a
@@ -397,6 +365,7 @@
             >{{hit._source.cve.nist.cvssv3.vector_string}}
               {{fa-icon "external-link-square" class="external-link-icon"}}</a>
           {{/if}}
+
           {{#if hit._source.nist.cvssv3.vector_string}}
             <span class="p-key">Vector String:</span>
             <a
@@ -405,58 +374,42 @@
             >{{hit._source.nist.cvssv3.vector_string}}
               {{fa-icon "external-link-square" class="external-link-icon"}}</a><br />
           {{/if}}
-          {{#if hit._source.cve.nist.configurations}}
-            <h1 class="p-title">{{fa-icon "bug" fixedWidth=true}}CPEs: </h1>
-            {{#each hit._source.cve.nist.configurations as |cpe|}}
-              <span class="source-tag">{{cpe.cpe23_uri}}</span>
+
+        {{#if (gt hit.products.length 0)}}
+          <h1 class="p-title">{{fa-icon "box-open" fixedWidth=true}} Products: </h1>
+          {{#each hit.products as |product|}}
+            <span class="source-tag">
+              {{product.name}}
+            </span>
+          {{/each}}
+        {{/if}}
+
+        {{#if (gt hit.vendors.length 0)}}
+          <h1 class="p-title">{{fa-icon "box-open" fixedWidth=true}} Vendors: </h1>
+          {{#each hit.vendors as |vendor|}}
+            <span class="source-tag">
+              {{vendor.name}}
+            </span>
+          {{/each}}
+        {{/if}}
+
+        {{#if (gt hit.tags.length 0)}}
+          <h1 class="p-title">{{fa-icon "box-open" fixedWidth=true}} Vendors: </h1>
+          {{#each hit.tags as |tag|}}
+            <span class="source-tag">{{tag}}</span>
+          {{/each}}
+        {{/if}}
+
+        {{#if (gt hit.ext_references.length 0)}}
+          <h1 class="p-title">{{fa-icon "browser" fixedWidth=true}}External References:
+          </h1>
+          <div>
+            {{#each hit.ext_references as |ref|}}
+              <div class="p-value">
+                <a href="{{ref.value}}" class="p-link">{{ref.type}}{{fa-icon icon="external-link-square" class="external-link-icon"}}</a>
+              </div>
             {{/each}}
-          {{/if}}
-          {{#if hit._source.nist.configurations}}
-            <h1 class="p-title">{{fa-icon "bug" fixedWidth=true}}CPEs: </h1>
-            {{#each hit._source.nist.configurations as |cpe|}}
-              <span class="source-tag">{{cpe.cpe23_uri}}</span>
-            {{/each}}
-          {{/if}}
-          {{#if hit._source.cve.nist.products}}
-            <h1 class="p-title">{{fa-icon "box-open" fixedWidth=true}}Products: </h1>
-            {{#each hit._source.cve.nist.products as |product|}}
-              <span class="source-tag">{{product.vendor_name}}
-                {{product.product_name}}</span>
-            {{/each}}
-          {{/if}}
-          {{#if hit._source.nist.products}}
-            <h1 class="p-title">{{fa-icon "box-open" fixedWidth=true}}Products: </h1>
-            {{#each hit._source.nist.products as |product|}}
-              <span class="source-tag">{{product.vendor_name}}
-                {{product.product_name}}</span>
-            {{/each}}
-          {{/if}}
-          {{#if hit._source.cve.nist.references}}
-            <h1 class="p-title">{{fa-icon "browser" fixedWidth=true}}External References:
-            </h1>
-            <div>
-              {{#each hit._source.cve.nist.references as |ref|}}
-                <span class="p-value"><a href="{{ref.url}}">{{ref.url}}
-                    {{fa-icon
-                      "external-link-square"
-                      class="external-link-icon"
-                    }}</a></span>
-              {{/each}}
-            </div>
-          {{/if}}
-          {{#if hit._source.nist.references}}
-            <h1 class="p-title">{{fa-icon "browser" fixedWidth=true}}External References:
-            </h1>
-            <div>
-              {{#each hit._source.nist.references as |ref|}}
-                <span class="p-value"><a href="{{ref.url}}">{{ref.url}}
-                    {{fa-icon
-                      "external-link-square"
-                      class="external-link-icon"
-                    }}</a></span>
-              {{/each}}
-            </div>
-          {{/if}}
+          </div>
         {{/if}}
       {{/each}}
     </div>

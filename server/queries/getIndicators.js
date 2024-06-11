@@ -16,6 +16,7 @@ const getIndicators = async (entities, options) => {
         resultId: entity.value,
         route: `technical-intelligence/v1/simple`,
         qs: {
+          limit: options.limit,
           hide_noisy_tags: true,
           ...buildQuery(entity)
         },
