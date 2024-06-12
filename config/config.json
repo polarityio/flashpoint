@@ -47,7 +47,7 @@
     {
       "key": "apiKey",
       "name": "API Key",
-      "description": "Valid Flashpoint API Key",
+      "description": "Valid Flashpoint Ignite API Key",
       "default": "",
       "type": "password",
       "userCanEdit": true,
