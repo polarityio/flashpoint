@@ -1,0 +1,223 @@
+.nav-tabs {
+  margin-top: 20px;
+}
+
+pre {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  max-height: 200px;
+  padding: 5px;
+  margin-top: 5px;
+}
+
+.info-bar {
+  display: flex;
+  flex-direction: column;
+  border-radius: 3px;
+  border: 1px solid #eee;
+
+  .info-bar-row {
+    display: flex;
+    border-bottom: 1px dashed #eee;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .info-bar-pill {
+    display: inline-block;
+
+    width: 33%;
+
+    &.two-wide {
+      width: 50%;
+    }
+
+    &.three-wide {
+      width: 33%;
+    }
+
+    padding: 3px 5px 3px 5px;
+
+    .info-bar-key {
+      width: 100%;
+      display: inline-block;
+      font-size: 10px;
+    }
+
+    .info-bar-value {
+      display: inline-block;
+      width: 100%;
+      font-weight: 500;
+    }
+  }
+}
+
+.error-container {
+  color: #000;
+  font-size: 10px;
+  padding: 5px;
+
+  .error-title {
+    color: #FF4559; //$p-red
+  }
+
+  .error-item {
+    white-space: pre-wrap;
+    max-height: 100px;
+    overflow-y: auto;
+  }
+
+  .error-close {
+    color: #FF4559; //$p-red
+    cursor: pointer;
+
+    &:hover {
+      color: darken(#FF4559, 20%);
+    }
+  }
+}
+
+.p-block {
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.p-wrap {
+  word-break: break-all;
+}
+
+.source-tag {
+  background-color: #cbd0d0;
+  padding: 3px 5px;
+  border-radius: 5px;
+  color: #000;
+  margin: 0 2px 5px 0;
+  display: inline-block;
+  font-weight: normal;
+}
+
+.card {
+  margin-bottom: 10px;
+  border-radius: 3px;
+  border: 1px solid #eee;
+
+  &:last-child {
+    margin-bottom: 0px;
+  }
+
+  .card-title {
+    border-bottom: 1px solid #eee;
+    margin: 0px;
+    padding: 3px 5px 3px 5px;
+    font-weight: 500;
+  }
+
+  .card-item {
+    padding: 3px 5px 3px 5px;
+  }
+}
+
+.scrollable {
+  overflow-y: scroll;
+  max-height: 200px;
+}
+
+.tag {
+  border-radius: 4px;
+  padding: 2px 5px;
+  margin-right: 3px;
+  line-height: 2em;
+  white-space: nowrap;
+  background-color: #eee;
+}
+
+.image-container {
+  img {
+    width: 100%;
+    height: 100%;
+  }
+
+  margin-top: 10px;
+  border: 1px solid #ddd;
+}
+
+.forum-post-header {
+  border: 1px solid #ccc;
+  border-bottom: none;
+  border-radius: 3px 3px 0px 0px;
+  padding: 5px;
+  margin-top: 10px;
+  background-color: #ddd;
+}
+
+.post-container {
+  border: 1px solid #ccc;
+  border-radius: 0px 0px 3px 3px;
+  border-top: none;
+  margin-bottom: 2px;
+  padding: 5px;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
+  resize: vertical;
+}
+
+.external-link-icon {
+  font-size: 8px;
+  margin-bottom: 1px;
+}
+
+.email-container {
+  margin-top: 5px;
+}
+
+.related-to {
+  word-wrap: break-word;
+}
+
+.copy-btn-container {
+  flex: 1 1 auto;
+  position: absolute;
+  right: 10px;
+  top: 7px;
+
+  .copy-btn {
+    font-size: 12px;
+    padding: 0px;
+    height: 20px;
+
+    :active {
+      color: darken(#388e3c, 5%);
+    }
+  }
+
+  .copy-success-message {
+    position: absolute;
+    z-index: 999;
+    top: 20px;
+    right: 0px;
+    background-color: rgb(222, 226, 230);
+    min-width: max-content;
+    padding: 5px;
+    border-radius: 3px;
+
+    .copy-success-icon {
+      color: #aaa;
+    }
+
+    &.visible {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.25s linear;
+    }
+
+    &.hidden {
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s 0.25s, opacity 0.25s linear;
+    }
+  }
+}

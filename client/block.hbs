@@ -1,0 +1,512 @@
+<div class="d-flex align-items-center justify-content-end copy-btn-container">
+  <button class="btn copy-btn p-action" {{action "copyData"}} title="Copy information to clipboard">
+    {{fa-icon icon="clipboard" fixedWidth=true}}
+  </button>
+  <div class="copy-success-message {{if showCopyMessage "visible" "hidden"}}">
+    {{fa-icon icon="check" fixedWidth=true class="copy-success-icon"}}
+    {{#if (or (eq activeTab 'indicators') (not activeTab))}}
+      {{#if (gt details.indicators.length 0)}}
+        Copied Indicators Data
+      {{else}}
+        Copied Vulnerability Data
+      {{/if}}
+    {{else}}
+      Copied Reports Data
+    {{/if}}
+  </div>
+</div>
+
+<ul class="nav nav-tabs mb-1">
+  <li class="nav-item">
+    <a
+      {{action "changeTab" "indicators"}}
+      class="nav-link {{if (or (eq activeTab 'indicators') (not activeTab)) 'active'}}"
+      href="#"
+    >
+      {{#if (gt details.indicators.length 0)}}
+        Indicators ({{details.indicators.length}})
+      {{else}}
+        Vulnerability
+      {{/if}}
+    </a>
+  </li>
+  {{#if (or block.isLoadingDetails details.reports.length)}}
+    <li class="nav-item">
+      <a
+        {{action "changeTab" "reports"}}
+        class="nav-link {{if (eq activeTab 'reports') 'active'}}"
+        href="#"
+      >Reports
+        {{#if block.isLoadingDetails}}
+          {{fa-icon "spinner-third" fixedWidth=true spin=true}}
+        {{else}}
+          ({{details.reports.length}})
+        {{/if}}</a>
+    </li>
+  {{/if}}
+</ul>
+<div id={{concat "flashpoint-container-" uniqueIdPrefix}}>
+  {{#if (eq activeTab "indicators")}}
+    {{#if details.vulnerabilities}}
+      <div class="non-community-indicators">
+        {{#each details.vulnerabilities as |hit index|}}
+          {{#if (gt index 0)}}
+            <hr />
+          {{/if}}
+          <h1 class="p-title">
+            {{fa-icon "flame" fixedWidth=true}}
+            Vulnerability Detail
+          </h1>
+          {{#if hit.id}}
+            <div class="mb-1">
+              <a href="https://app.flashpoint.io/vuln/vulnerabilities/{{hit.id}}" class="p-link">View in Flashpoint {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+            </div>
+          {{/if}}
+          {{#if hit.title}}
+            <div>
+              <span class="p-key">Title:</span>
+              <span class="p-value p-block">{{hit.title}}</span>
+            </div>
+          {{/if}}
+
+          {{#if hit.keywords}}
+            <div class="mt-1 mb-1">
+              <span class="p-key">Keywords:</span>
+              <span class="p-value p-block">{{hit.keywords}}</span>
+            </div>
+          {{/if}}
+
+          {{#if hit.timelines.disclosed_at}}
+            <div>
+              <span class="p-key">Disclosed at:</span>
+              <span class="p-value">
+                {{moment-format
+                        hit.timelines.disclosed_at
+                        "YYYY-MM-DD HH:mm:ss z"
+                        timeZone=timezone
+                }}
+              </span>
+            </div>
+          {{/if}}
+
+          {{#if hit.timelines.published_at}}
+            <div>
+              <span class="p-key">Published at:</span>
+              <span class="p-value">
+                {{moment-format
+                        hit.timelines.published_at
+                        "YYYY-MM-DD HH:mm:ss z"
+                        timeZone=timezone
+                }}
+              </span>
+            </div>
+          {{/if}}
+
+          {{#if hit.timelines.last_modified_at}}
+            <div>
+              <span class="p-key">Last modified:</span>
+              <span class="p-value">
+                {{moment-format
+                    hit.timelines.last_modified_at
+                    "YYYY-MM-DD HH:mm:ss z"
+                    timeZone=timezone
+                }}
+              </span>
+            </div>
+          {{/if}}
+
+          {{#if hit.scores.epss_score}}
+            <div>
+              <span class="p-key">EPSS Score:</span>
+              <span class="p-value p-block">{{hit.scores.epss_score}}</span>
+            </div>
+          {{/if}}
+
+          {{#if hit.scores.severity}}
+            <div>
+              <span class="p-key">Severity:</span>
+              <span class="p-value p-block">{{hit.scores.severity}}</span>
+            </div>
+          {{/if}}
+
+          {{#if hit.vuln_status}}
+            <div>
+              <span class="p-key">Status:</span>
+              <span class="p-value p-block">{{hit.vuln_status}}</span>
+            </div>
+          {{/if}}
+
+          {{#if hit.description}}
+            <div class="card mt-2">
+              <div class="card-title">Description</div>
+              <div class="card-item">
+                <span class="p-value p-block">{{hit.description}}</span>
+              </div>
+            </div>
+          {{/if}}
+
+          {{#if hit.solution}}
+            <div class="card">
+              <div class="card-title">Solution</div>
+              <div class="card-item">
+                <span class="p-value p-block">{{hit.solution}}</span>
+              </div>
+            </div>
+          {{/if}}
+
+          {{#if (gt hit.cwes.length 0)}}
+            <h1 class="p-title">{{fa-icon icon="info-circle" fixedWidth=true}} Common Weakness Enumerations</h1>
+            {{#each hit.cwes as | cwe | }}
+              <div class="card">
+                <div class="card-item">
+                  <div class="p-value p-block mb-1">{{cwe.name}}</div>
+                  <div>
+                    <span class="p-key">Source:</span>
+                    <span class="p-value">{{cwe.source}}</span>
+                  </div>
+                  <div>
+                    <span class="p-key">ID:</span>
+                    <span class="p-value">{{cwe.cwe_id}}</span>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+          {{/if}}
+
+          {{#if (gt hit.cvss_v3s.length 0)}}
+            <h1 class="p-title">{{fa-icon icon="info-circle" fixedWidth=true}} CVSS v3</h1>
+            {{#each hit.cvss_v3s as | cv | }}
+              <div class="card">
+                <div class="card-item">
+                  <div class="p-value mb-1">{{cv.vector_string}}</div>
+                  <div>
+                    <span class="p-key">Source:</span>
+                    <span class="p-value">{{cv.source}}</span>
+                  </div>
+
+                  <h1 class="p-title">Scores</h1>
+                  <div class="info-bar mb-1">
+                    <div class="info-bar-row">
+                      <div class="info-bar-pill">
+                        <span class="info-bar-key">Score</span>
+                        <span class="info-bar-value">
+                          {{cv.score}}
+                        </span>
+                      </div>
+                      <div class="info-bar-pill">
+                        <span class="info-bar-key">CVSS Base Score</span>
+                        <span class="info-bar-value">
+                          {{cv.calculated_cvss_base_score}}
+                        </span>
+                      </div>
+                      <div class="info-bar-pill">
+                        <span class="info-bar-key">Scope</span>
+                        <span class="info-bar-value">
+                          {{cv.scope}}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h1 class="p-title">Exploitability</h1>
+                  <div class="info-bar mb-1">
+                    <div class="info-bar-row">
+                      <div class="info-bar-pill two-wide">
+                        <span class="info-bar-key">Attack Vector</span>
+                        <span class="info-bar-value">
+                          {{cv.attack_vector}}
+                        </span>
+                      </div>
+                      <div class="info-bar-pill two-wide">
+                        <span class="info-bar-key">Complexity</span>
+                        <span class="info-bar-value">
+                          {{cv.attack_complexity}}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="info-bar-row">
+                      <div class="info-bar-pill two-wide">
+                        <span class="info-bar-key">Privileges Req'd</span>
+                        <span class="info-bar-value">
+                          {{cv.privileges_required}}
+                        </span>
+                      </div>
+                      <div class="info-bar-pill two-wide">
+                        <span class="info-bar-key">User Interaction</span>
+                        <span class="info-bar-value">
+                          {{cv.user_interaction}}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h1 class="p-title">Impacts</h1>
+                  <div class="info-bar mb-1">
+                    <div class="info-bar-row">
+                      <div class="info-bar-pill">
+                        <span class="info-bar-key">Confidentiality</span>
+                        <span class="info-bar-value">
+                          {{cv.confidentiality_impact}}
+                        </span>
+                      </div>
+                      <div class="info-bar-pill">
+                        <span class="info-bar-key">Integrity</span>
+                        <span class="info-bar-value">
+                          {{cv.integrity_impact}}
+                        </span>
+                      </div>
+                      <div class="info-bar-pill">
+                        <span class="info-bar-key">Availability</span>
+                        <span class="info-bar-value">
+                          {{cv.availability_impact}}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {{/each}}
+          {{/if}}
+
+          {{#if (gt hit.products.length 0)}}
+            <h1 class="p-title">{{fa-icon "box-open" fixedWidth=true}} Products: </h1>
+            <div class="scrollable">
+              {{#each hit.products as |product|}}
+                <span class="source-tag">
+                  {{product.name}}
+                </span>
+              {{/each}}
+            </div>
+          {{/if}}
+
+          {{#if (gt hit.vendors.length 0)}}
+            <h1 class="p-title">{{fa-icon "box-open" fixedWidth=true}} Vendors: </h1>
+            {{#each hit.vendors as |vendor|}}
+              <span class="source-tag">
+                {{vendor.name}}
+              </span>
+            {{/each}}
+          {{/if}}
+
+          {{#if (gt hit.tags.length 0)}}
+            <h1 class="p-title">{{fa-icon "box-open" fixedWidth=true}} Vendors: </h1>
+            {{#each hit.tags as |tag|}}
+              <span class="source-tag">{{tag}}</span>
+            {{/each}}
+          {{/if}}
+
+          {{#if (gt hit.ext_references.length 0)}}
+            <h1 class="p-title">{{fa-icon "browser" fixedWidth=true}}External References</h1>
+            <div class="scrollable">
+              {{#each hit.ext_references as |ref|}}
+                <div class="mb-2">
+                  <div class="p-value">
+                    {{ref.type}}
+                  </div>
+                  <div>
+                    <a href="{{ref.value}}" class="p-link p-wrap">{{ref.value}} {{fa-icon icon="external-link-square" class="external-link-icon"}}</a>
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+          {{/if}}
+        {{/each}}
+      </div>
+    {{/if}}
+
+    {{#if details.indicators}}
+      <div class="indicators">
+        {{#each details.indicators as |object index|}}
+          {{#if (gt index 0)}}
+            <hr>
+          {{/if}}
+          <div class="mb-1">
+            <a href="https://app.flashpoint.io/cti/malware/iocs/{{object.Attribute.fpid}}" class="p-link">View IOC in Flashpoint {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+          </div>
+          {{#each-in object.Attribute.value as | key value |}}
+            {{#if value}}
+              <div>
+                <span class="p-key">{{key}}: </span>
+                <span class="p-value">{{value}}</span>
+              </div>
+            {{/if}}
+          {{/each-in}}
+
+          {{#if object.Attribute.category}}
+            <div>
+              <span class="p-key">Category:</span>
+              <span class="p-value">{{object.Attribute.category}}</span>
+            </div>
+          {{/if}}
+
+          {{#if object.Attribute.timestamp}}
+            <div>
+              <span class="p-key">Indicator Timestamp:</span>
+              <span class="p-value">{{moment-format
+                  (unix object.Attribute.timestamp)
+                  "YYYY-MM-DD HH:mm:ss z"
+                  timeZone=timezone
+                }}</span>
+            </div>
+          {{/if}}
+
+          {{#if (gt object.Attribute.Event.Tags.length 0)}}
+            <h1 class="p-title">{{fa-icon icon="tags" fixedWidth=true}} Event Tags</h1>
+            <div class="mt-1">
+              {{#each object.Attribute.Event.Tags as | tag |}}
+                <span class="tag">{{tag}}</span>
+              {{/each}}
+            </div>
+          {{/if}}
+
+          {{#if object.Attribute.Event.href}}
+            <div class="mb-1 mt-1 d-flex align-items-top justify-content-between">
+              <div class="p-action p-wrap" {{on "click" (action "toggleEventDetails" object.Attribute.Event.href index)}}>
+                {{object.Attribute.Event.info}}
+              </div>
+              <div class="p-action ml-1">
+                {{#if object._eventLoading}}
+                  {{fa-icon icon="spinner-third" spin=true fixedWidth=true}}
+                {{else if object._eventOpen}}
+                  {{fa-icon icon="chevron-up" fixedWidth=true}}
+                {{else}}
+                  {{fa-icon icon="chevron-down" fixedWidth=true}}
+                {{/if}}
+              </div>
+            </div>
+            {{#if object._eventLoading}}
+              <div class="mt-1">
+                Loading event details ...
+              </div>
+            {{/if}}
+          {{/if}}
+
+          {{#if object._eventEnrichedError}}
+            <div class="alert alert-danger mt-2 error-container">
+              <div class="d-flex align-items-center justify-content-between">
+                <div class="error-title">{{fa-icon icon="exclamation-triangle" fixedWidth=true}} Error Fetching Event Data</div>
+                {{fa-icon icon="times" fixedWidth=true class="error-close" click=(action "clearError" index)}}
+              </div>
+              <div class="error-item">{{object._eventEnrichedError}}</div>
+            </div>
+          {{/if}}
+
+          {{#if (and object._eventEnriched object._eventOpen)}}
+            <div class="mt-2">
+              {{#if object._eventEnriched.malware_description}}
+                <div class="card scrollable">
+                  <div class="card-item">
+                    {{{object._eventEnriched.malware_description}}}
+                  </div>
+                </div>
+                {{#each object._eventEnriched.Event.Attribute as | attribute |}}
+                  <div class="card">
+                    <div class="card-title d-flex align-items-center justify-content-between">
+                      <span class="p-value">{{attribute.category}}</span>
+                      <span class="p-footnote">attribute</span>
+                    </div>
+                    <div class="card-item">
+                      {{#each-in attribute.value as | key value |}}
+                        {{#if value}}
+                          <div>
+                            <span class="p-key">{{key}}: </span>
+                            <span class="p-value">{{value}}</span>
+                          </div>
+                        {{/if}}
+                      {{/each-in}}
+                      {{#if attribute.timestamp}}
+                        <div>
+                          <span class="p-key">Time:</span>
+                          <span class="p-value">
+                            {{moment-format
+                              (unix attribute.timestamp)
+                              "YYYY-MM-DD HH:mm:ss z"
+                              timeZone=timezone
+                            }}
+                          </span>
+                        </div>
+                      {{/if}}
+                      {{#if attribute.last_seen}}
+                        <div>
+                          <span class="p-key">Last Seen:</span>
+                          <span class="p-value">
+                            {{moment-format
+                              (unix attribute.last_seen)
+                              "YYYY-MM-DD HH:mm:ss z"
+                              timeZone=timezone
+                            }}
+                          </span>
+                        </div>
+                      {{/if}}
+                    </div>
+                  </div>
+                {{/each}}
+              {{/if}}
+            </div>
+          {{/if}}
+
+
+        {{/each}}
+      </div>
+    {{/if}}
+  {{/if}}
+
+  {{#if (eq activeTab "reports")}}
+    {{#if block.isLoadingDetails}}
+      <div class="mt-1 ml-1">
+        {{fa-icon "spinner-third" size="lg" fixedWidth=true spin=true}}
+      </div>
+    {{else}}
+      {{#if details.reports}}
+        {{#if (eq details.reports.length 0)}}
+          <div class="mt-2">No Reports</div>
+        {{/if}}
+        {{#each details.reports as |object index|}}
+          {{#if (gt index 0)}}
+            <hr />
+          {{/if}}
+          <h1 class="p-title">
+            {{fa-icon "book-open" fixedWidth=true}}
+            Report Detail
+          </h1>
+          {{#if object.title}}
+            <div>
+              <span class="p-key">Title:</span>
+              <a href="{{object.platform_url}}" class="p-link">{{object.title}}
+                {{fa-icon "external-link-square" class="external-link-icon"}}</a>
+            </div>
+          {{/if}}
+          {{#if object.summary}}
+            <div>
+              <span class="p-key">Summary:</span>
+              <span class="p-value p-block">{{object.summary}}</span>
+            </div>
+          {{/if}}
+          {{#if object.posted_at}}
+            <div>
+              <span class="p-key">Posted:</span>
+              <span class="p-value">{{object.posted_at}}</span>
+            </div>
+          {{/if}}
+          {{#if object.updated_at}}
+            <div>
+              <span class="p-key">Last Updated:</span>
+              <span class="p-value">{{object.updated_at}}</span>
+            </div>
+          {{/if}}
+          {{#if object.tags}}
+            <h1 class="p-title">
+              {{fa-icon "tags" fixedWidth=true}}
+              Report Tags
+            </h1>
+            <div>
+              {{#each object.tags as |tag|}}
+                <span class="tag">{{tag}}</span>
+              {{/each}}
+            </div>
+          {{/if}}
+        {{/each}}
+      {{/if}}
+    {{/if}}
+  {{/if}}
+</div>

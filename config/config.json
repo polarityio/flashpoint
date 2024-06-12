@@ -5,29 +5,23 @@
   "description": "Flashpoint delivers Business Risk Intelligence (BRI) that empowers organizations worldwide to combat threats and adversaries",
   "entityTypes": [
     "IPv4",
-    "hash",
+    "MD5",
+    "SHA1",
+    "SHA256",
     "domain",
     "email",
     "cve"
   ],
   "styles": [
-    "./styles/fp.less"
+    "./client/styles.less"
   ],
-  "defaultColor": "light-pink",
+  "defaultColor": "light-blue",
   "block": {
     "component": {
-      "file": "./components/fp-block.js"
+      "file": "./client/block.js"
     },
     "template": {
-      "file": "./templates/fp-block.hbs"
-    }
-  },
-  "summary": {
-    "component": {
-      "file": "./components/fp-summary.js"
-    },
-    "template": {
-      "file": "./templates/fp-summary.hbs"
+      "file": "./client/block.hbs"
     }
   },
   "request": {
@@ -45,7 +39,7 @@
       "key": "url",
       "name": "Flashpoint API URL",
       "description": "The base URL of the Flashpoint API including the schema (i.e., https://)",
-      "default": "https://fp.tools/api/v4",
+      "default": "https://api.flashpoint.io",
       "type": "text",
       "userCanEdit": false,
       "adminOnly": true
@@ -53,7 +47,7 @@
     {
       "key": "apiKey",
       "name": "API Key",
-      "description": "Valid Flashpoint API Key",
+      "description": "Valid Flashpoint Ignite API Key",
       "default": "",
       "type": "password",
       "userCanEdit": true,
@@ -67,6 +61,53 @@
       "type": "number",
       "userCanEdit": true,
       "adminOnly": false
+    },
+    {
+      "key": "indicatorSearchWindow",
+      "name": "Indicator Search Window",
+      "description": "How far back from now to search for indicators (defaults to 30 days)",
+      "default": {
+        "value": "30d",
+        "display": "1 month"
+      },
+      "type": "select",
+      "options": [
+        {
+          "value": "0",
+          "display": "All time"
+        },
+        {
+          "value": "5y",
+          "display": "5 years"
+        },
+        {
+          "value": "3y",
+          "display": "3 years"
+        },
+        {
+          "value": "1y",
+          "display": "1 year"
+        },
+        {
+          "value": "6M",
+          "display": "6 months"
+        },
+        {
+          "value": "3M",
+          "display": "3 months"
+        },
+        {
+          "value": "30d",
+          "display": "1 month"
+        },
+        {
+          "value": "7d",
+          "display": "1 week"
+        }
+      ],
+      "multiple": false,
+      "userCanEdit": false,
+      "adminOnly": true
     },
     {
       "key": "blocklist",
