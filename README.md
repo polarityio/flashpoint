@@ -8,16 +8,16 @@ For more information on Flashpoint, please visit [official website](https://www.
 
 Check out the integration in action:
 
-| ![image](assets/overlay_indicators.png) | ![image](assets/overlay_reports.png) 
-| --- | --- |
-|*Flashpoint Indicator Information* | *Flashpoint Reports* |
+| ![image](assets/overlay_indicators.png) | ![image](assets/overlay_vulnerability.png) | ![image](assets/overlay_reports.png) 
+| --- |-------------------------------------------|---|
+|*Indicator Example* | *Vulnerability Example* | *Reports Example*|
 
 ## Flashpoint Integration Options
 
 ### Flashpoint API Base URL
 The base URL for the Flashpoint API.  Defaults to https://fp.tools/api/v4/
 
-### Flashpoint API Key
+### Flashpoint Ignite API Key
 
 Valid Flashpoint API key generated on the "APIs & Integrations" page of fp.tools
 
