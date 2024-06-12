@@ -30,18 +30,15 @@ const getResultsForThisEntity = (entity, indicators, vulnResults, options) => ({
   vulnerabilities: getResultForThisEntity(entity, vulnResults)
 });
 
-const createSummaryTags = ({ indicators, vulnResults }, options) => {
-  const indicatorSize = size(indicators) || size(vulnResults);
-
-  return [].concat(indicatorSize ? `Indicators: ${indicatorSize}` : []).concat(
-    size(vulnResults)
-      ? vulnResults.flatMap((hit) => {
-          return []
-            .concat(`Severity: ${hit.scores.severity}`)
-            .concat(`Status: ${hit.vuln_status}`);
-        })
-      : []
-  );
+const createSummaryTags = ({ indicators, vulnerabilities }, options) => {
+  if (size(indicators)) {
+    return [`Indicators: ${size(indicators)}`];
+  } else if (size(vulnerabilities)) {
+    return [
+      `Severity: ${vulnerabilities[0].scores.severity}`,
+      `Status: ${vulnerabilities[0].vuln_status}`
+    ];
+  }
 };
 
 module.exports = assembleLookupResults;

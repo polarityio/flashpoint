@@ -3,8 +3,18 @@
   "name": "Flashpoint",
   "acronym": "FP",
   "description": "Flashpoint delivers Business Risk Intelligence (BRI) that empowers organizations worldwide to combat threats and adversaries",
-  "entityTypes": ["IPv4", "hash", "domain", "email", "cve"],
-  "styles": ["./client/styles.less"],
+  "entityTypes": [
+    "IPv4",
+    "MD5",
+    "SHA1",
+    "SHA256",
+    "domain",
+    "email",
+    "cve"
+  ],
+  "styles": [
+    "./client/styles.less"
+  ],
   "defaultColor": "light-blue",
   "block": {
     "component": {

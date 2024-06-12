@@ -3,7 +3,7 @@ module.exports = {
   acronym: 'FP',
   description:
     'Flashpoint delivers Business Risk Intelligence (BRI) that empowers organizations worldwide to combat threats and adversaries',
-  entityTypes: ['IPv4', 'hash', 'domain', 'email', 'cve'],
+  entityTypes: ['IPv4', 'MD5', 'SHA1', 'SHA256', 'domain', 'email', 'cve'],
   styles: ['./client/styles.less'],
   defaultColor: 'light-blue',
   block: {
@@ -38,7 +38,7 @@ module.exports = {
     {
       key: 'apiKey',
       name: 'API Key',
-      description: 'Valid Flashpoint API Key',
+      description: 'Valid Flashpoint Ignite API Key',
       default: '',
       type: 'password',
       userCanEdit: true,

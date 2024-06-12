@@ -19,7 +19,7 @@ The base URL for the Flashpoint API.  Defaults to https://fp.tools/api/v4/
 
 ### Flashpoint Ignite API Key
 
-Valid Flashpoint API key generated on the "APIs & Integrations" page of fp.tools
+Valid Flashpoint Ignite API key generated on the "APIs & Integrations" page Flashpoint Ignite App
 
 ### Ignore List 
 
