@@ -21,6 +21,14 @@ The base URL for the Flashpoint API.  Defaults to https://fp.tools/api/v4/
 
 Valid Flashpoint Ignite API key generated on the "APIs & Integrations" page Flashpoint Ignite App
 
+### Result Limit
+
+The maximum amount of results to be returned per query
+
+### Indicator Search Window
+
+How far back from now to search (defaults to 30 days)
+
 ### Ignore List 
 
 This is an alternate option that can be used to specify domains or IPs that you do not want sent to Flashpoint.  The data must specify the entire IP or domain to be blocked (e.g., www.google.com is treated differently than google.com).

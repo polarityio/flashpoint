@@ -54,6 +54,53 @@ module.exports = {
       adminOnly: false
     },
     {
+      key: 'indicatorSearchWindow',
+      name: 'Indicator Search Window',
+      description: 'How far back from now to search for indicators (defaults to 30 days)',
+      default:         {
+        value: '30d',
+        display: '1 month'
+      },
+      type: 'select',
+      options: [
+        {
+          value: '0',
+          display: 'All time'
+        },
+        {
+          value: '5y',
+          display: '5 years'
+        },
+        {
+          value: '3y',
+          display: '3 years'
+        },
+        {
+          value: '1y',
+          display: '1 year'
+        },
+        {
+          value: '6M',
+          display: '6 months'
+        },
+        {
+          value: '3M',
+          display: '3 months'
+        },
+        {
+          value: '30d',
+          display: '1 month'
+        },
+        {
+          value: '7d',
+          display: '1 week'
+        }
+      ],
+      multiple: false,
+      userCanEdit: false,
+      adminOnly: true
+    },
+    {
       key: 'blocklist',
       name: 'Ignore List',
       description:

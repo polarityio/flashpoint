@@ -11,8 +11,8 @@ const getIndicators = async (entities, options) => {
   const Logger = getLogger();
 
   try {
-    const indicatorsRequests = map(
-      (entity) => ({
+    const indicatorsRequests = map((entity) => {
+      const request = {
         resultId: entity.value,
         route: `technical-intelligence/v1/simple`,
         qs: {
@@ -21,9 +21,12 @@ const getIndicators = async (entities, options) => {
           ...buildQuery(entity)
         },
         options
-      }),
-      entities
-    );
+      };
+      if (options.indicatorSearchWindow.value !== '0') {
+        request.qs.start_date = options.indicatorSearchWindow.value;
+      }
+      return request;
+    }, entities);
 
     const indicators = await requestsInParallel(indicatorsRequests, 'body');
 
