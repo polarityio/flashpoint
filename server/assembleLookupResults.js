@@ -1,4 +1,4 @@
-const { size, map, some, get } = require('lodash/fp');
+const { size, getOr, map, some, get } = require('lodash/fp');
 const { getResultForThisEntity } = require('./dataTransformations');
 
 const assembleLookupResults = (entities, indicators, vulnResults, options) =>
@@ -35,8 +35,8 @@ const createSummaryTags = ({ indicators, vulnerabilities }, options) => {
     return [`Indicators: ${size(indicators)}`];
   } else if (size(vulnerabilities)) {
     return [
-      `Severity: ${vulnerabilities[0].scores.severity}`,
-      `Status: ${vulnerabilities[0].vuln_status}`
+      `Severity: ${getOr('Unknown')('[0].scores.severity')(vulnerabilities)}`,
+      `Status: ${getOr('Unknown')('[0].vuln_status')(vulnerabilities)}`
     ];
   }
 };
