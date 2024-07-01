@@ -2,10 +2,10 @@ name: Release Current Version
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ master, main, INT-1278 ]
 
 jobs:
   Run:
-    uses: polarityio/polarity-github-actions/.github/workflows/release-server-versions-for-int-store.yml@master
+    uses: polarityio/polarity-github-actions/.github/workflows/release-server-versions-for-int-store.yml@INT-1278
     # with: 
       # use-integration-development-checklist: false
