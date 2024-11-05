@@ -505,6 +505,28 @@
               {{/each}}
             </div>
           {{/if}}
+          <div class="mb-1 mt-1 d-flex align-items-top justify-content-between">
+            <div class="p-action p-wrap" {{on "click" (action "getReportAssets" object.id index)}}>
+              Read Report
+            </div>
+            <div class="p-action ml-1">
+              {{#if object._loadingReport}}
+                {{fa-icon icon="spinner-third" spin=true fixedWidth=true}}
+              {{else if object._reportOpen}}
+                {{fa-icon icon="chevron-up" fixedWidth=true}}
+              {{else}}
+                {{fa-icon icon="chevron-down" fixedWidth=true}}
+              {{/if}}
+            </div>
+          </div>
+          {{#if object._loadingReport}}
+            <div class="mt-1">
+              Loading report ...
+            </div>
+          {{/if}}
+          {{#if object._reportOpen}}
+            <div class="report-content">{{{object.body}}}</div>
+          {{/if}}
         {{/each}}
       {{/if}}
     {{/if}}
