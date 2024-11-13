@@ -1,4 +1,5 @@
 const { size } = require('lodash/fp');
+const async = require('async');
 const {
   logging: { setLogger, getLogger },
   errors: { parseErrorToReadableJson }
@@ -12,10 +13,12 @@ const {
   removeBlocklistedIpsAndDomains
 } = require('./server/dataTransformations');
 const {
+  getReportById,
   getEvent,
   getIndicators,
   getReports,
-  getVulnerability
+  getVulnerability,
+  getReportImage
 } = require('./server/queries');
 
 const assembleLookupResults = require('./server/assembleLookupResults');
@@ -66,14 +69,52 @@ const doLookup = async (entities, options, cb) => {
 const onMessage = async (payload, options, cb) => {
   const Logger = getLogger();
   Logger.trace({ payload }, 'onMessage');
-  try {
-    const event = await getEvent(payload.eventLink, options);
-    cb(null, event);
-  } catch (error) {
-    const err = parseErrorToReadableJson(error);
+  switch (payload.action) {
+    case 'GET_EVENT':
+      try {
+        const event = await getEvent(payload.eventLink, options);
+        cb(null, event);
+      } catch (error) {
+        const err = parseErrorToReadableJson(error);
 
-    Logger.error({ error, formattedError: err }, 'Get Event Details Failed');
-    cb(err);
+        Logger.error({ error, formattedError: err }, 'Get Event Details Failed');
+        cb(err);
+      }
+      break;
+    case 'GET_REPORT_ASSETS':
+      try {
+        const assets = payload.assets;
+        const images = {};
+        await async.eachLimit(assets, 5, async (asset) => {
+          const reportImageAsBase64 = await getReportImage(asset, options);
+          images[asset] = reportImageAsBase64;
+        });
+
+        Logger.trace({ fetchedAssetNames: Object.keys(images) }, 'GET_REPORT_ASSETS');
+
+        cb(null, {
+          images
+        });
+      } catch (error) {
+        const err = parseErrorToReadableJson(error);
+
+        Logger.error({ error, formattedError: err }, 'GET_REPORT_ASSETS Failed');
+        cb(err);
+      }
+      break;
+    // Not currently used as the content of the report is returned by `getReports`
+    case 'GET_REPORT':
+      try {
+        const report = await getReportById(payload.reportId, options);
+        Logger.info({ assets: report.assets }, 'Image assets');
+        cb(null, report);
+      } catch (error) {
+        const err = parseErrorToReadableJson(error);
+
+        Logger.error({ error, formattedError: err }, 'GET_REPORT Failed');
+        cb(err);
+      }
+      break;
   }
 };
 

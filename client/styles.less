@@ -10,6 +10,88 @@ pre {
   margin-top: 5px;
 }
 
+// Overrides styles for Flashpoint report rendering in the Overlay Window
+.report-content {
+  word-wrap: break-word;
+  word-break: break-word;
+
+  ul {
+    padding: 0px 0px 0px 15px;
+  }
+
+  h1 {
+    font-size: 12px;
+    margin: 10px 0px 5px 0px;
+  }
+
+  h2 {
+    font-size: 12px;
+    margin: 10px 0px 5px 0px;
+  }
+
+  h3, h4, h5 {
+    font-size: 12px;
+    margin: 10px 0px 5px 0px;
+  }
+
+  // Seems to be used for code 
+  h6 {
+    font-size: 12px;
+    font-weight: 400;
+    margin: 10px 0px 5px 0px;
+    font-family: monospace;
+  }
+
+  // We use this so that in the client images don't overflow the overlay window
+  // once the client supports a newer version of chrome that supports parent CSS 
+  // selectors we can remove this and let the rule below work.  This is required
+  // because the image tags are wrapped in span tags that have explicit dimensions
+  // defined that cause the image to overflow.
+  span {
+    // images in reports have explicit widths and heights set
+    // this lets them fill the overlay window without overflowing 
+    // but not get bigger than their explicit width
+    height: auto !important;
+    max-width: 100% !important;
+  }
+
+  // parent selector syntax is not supported in version of chrome in browser
+  span:has(img) {
+    height: auto !important;
+    max-width: 100% !important;
+  }
+
+  img {
+    height: auto !important;
+    //width: 100% !important;
+    display:block !important;
+    max-width: 100% !important;
+  }
+
+  table {
+    tbody {
+      td {
+        border-bottom: 1px solid rgb(217, 217, 217);
+      }
+
+      tr:nth-child(odd) {
+        background-color: #fff;
+      }
+
+      tr:last-child {
+        td {
+          border-bottom: none;
+        }
+      }
+
+      td:first-child {
+        min-width: 25%;
+        width: 25%;
+      }
+    }
+  }
+}
+
 .info-bar {
   display: flex;
   flex-direction: column;
