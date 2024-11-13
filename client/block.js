@@ -18,6 +18,54 @@ polarity.export = PolarityComponent.extend({
     clearError: function (index) {
       this.set(`details.indicators.${index}._eventEnrichedError`, '');
     },
+    getReportAssets: function (reportId, index) {
+      const assets = this.get(`details.reports.${index}.assets`);
+
+      // Not all reports have assets to load so just return if that's the case
+      if (!assets || assets.length === 0) {
+        this.toggleProperty(`details.reports.${index}._reportOpen`);
+        return;
+      }
+
+      // Check to see if we've already loaded assets
+      if (this.get(`details.reports.${index}.__assetsLoaded`)) {
+        this.toggleProperty(`details.reports.${index}._reportOpen`);
+        return;
+      }
+
+      this.set(`details.reports.${index}._loadingReport`, true);
+
+      const payload = {
+        action: 'GET_REPORT_ASSETS',
+        assets
+      };
+
+      this.sendIntegrationMessage(payload)
+        .then((result) => {
+          let reportContent = this.get(`details.reports.${index}.body`);
+          assets.forEach((asset) => {
+            console.info('Replacing assets ' + asset);
+            const imageSrcToReplace = new RegExp(
+              `/finished-intelligence/v1${asset}`,
+              'g'
+            );
+            reportContent = reportContent.replace(
+              imageSrcToReplace,
+              result.images[asset]
+            );
+          });
+          this.set(`details.reports.${index}.body`, reportContent);
+          this.set(`details.reports.${index}.__assetsLoaded`, true);
+          this.toggleProperty(`details.reports.${index}._reportOpen`);
+        })
+        .catch((err) => {
+          console.error(err);
+          this.set(`details.reports.${index}.__loadingError`, JSON.stringify(err, null, 2));
+        })
+        .finally(() => {
+          this.set(`details.reports.${index}._loadingReport`, false);
+        });
+    },
     toggleEventDetails: function (eventLink, index) {
       this.toggleProperty(`details.indicators.${index}._eventOpen`);
 
@@ -48,10 +96,10 @@ polarity.export = PolarityComponent.extend({
     },
     copyData: function () {
       Ember.run.scheduleOnce(
-          'afterRender',
-          this,
-          this.copyElementToClipboard,
-          `flashpoint-container-${this.get('uniqueIdPrefix')}`
+        'afterRender',
+        this,
+        this.copyElementToClipboard,
+        `flashpoint-container-${this.get('uniqueIdPrefix')}`
       );
 
       Ember.run.scheduleOnce('destroy', this, this.restoreCopyState);

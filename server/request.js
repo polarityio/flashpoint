@@ -24,7 +24,7 @@ const requestWithDefaults = createRequestWithDefaults({
     json: true
   }),
   postprocessRequestFailure: (error) => {
-    if ([404, 202].includes(error.status)) return null;
+    if ([202].includes(error.status)) return null;
 
     try {
       const errorResponseBody = JSON.parse(error.description);
